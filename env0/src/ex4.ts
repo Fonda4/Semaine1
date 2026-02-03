@@ -1,7 +1,7 @@
 interface Person {
-firstName: string,
-lastName: string,
-id: number
+    firstName: string,
+    lastName: string,
+    id: number
 }
 
 const person1: Person = {
@@ -15,4 +15,43 @@ function plotPersonInformation( person : Person): void{
 }
 console.log( plotPersonInformation(person1))
 
-function plotAllPersons ( persons ) : 
+function plotAllPersons ( persons : Person[] ) : number {
+    for (const p of persons){
+        plotPersonInformation(p);
+    }
+
+    return persons.length;
+} 
+
+const allPersons: Person[] = [person1];
+
+
+const count1 = plotAllPersons(allPersons);
+
+console.log(`Nombre de personnes affichées : ${count1}`);
+
+const person2: Person = {
+    firstName: "Elena",
+    lastName: "Fisher",
+    id: 2
+};
+
+allPersons.push(person2);
+
+const count2 = plotAllPersons(allPersons);
+console.log(`Nombre de personnes affichées : ${count2}`);
+
+function findPerson(persons: Person[], idToFind: number): Person | undefined {
+    for (const p of persons) {
+        if (p.id === idToFind) {
+            return p;
+        }
+    }
+    return undefined;
+}
+
+const found = findPerson(allPersons, 1);
+console.log("Recherche id 1:", found); 
+
+const notFound = findPerson(allPersons, 4);
+console.log("Recherche id 4:", notFound);

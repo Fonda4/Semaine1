@@ -14,7 +14,7 @@ exports.app.use(cors());
 exports.app.use(express_1.default.json());
 // defines a dummy route
 exports.app.get('/', (req, res) => {
-    res.send("Hello World!");
+    res.send("Bonjour tout le monde");
 });
 // use the controller to use the route
 exports.app.use('/doctors', doctors_controller_1.doctorsController);

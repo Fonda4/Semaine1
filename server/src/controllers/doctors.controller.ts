@@ -7,10 +7,13 @@ import { Doctor } from "../models/doctor.model";
 
 export const doctorsController = Router();
 
+console.log("OK")
+
 // This is a static mock array of doctors
 const doctors: Doctor[] = [
   {id:1, firstName: "Jules", lastName: "Valles", speciality: "Cardiologue"}, 
   {id:2, firstName: "Safouane", lastName: "Van Brussels", speciality: "General Practicien"}, 
+  {id:3,firstName: "Paola", lastName: "Sanchez", speciality: "pulmonologist"}
 ];
 
 /**

@@ -4,6 +4,7 @@
 
 import { Request, Response, Router } from "express";
 import { Doctor } from "../models/doctor.model";
+import { isNumber } from "../utils/guards";
 
 export const doctorsController = Router();
 
@@ -22,4 +23,18 @@ const doctors: Doctor[] = [
 doctorsController.get("/", (req: Request, res: Response) => {
   console.log("[GET] /doctors/");
   res.json(doctors).status(200);
+});
+
+doctorsController.get("/:id", (req: Request, res: Response) => {
+  console.log("[GET] /doctors/:id");
+
+const id = req.params.id;
+
+  if (!isNumber(id)){
+    console.log('invalid id');
+    res.status(400).send('invalid id');
+    return;
+  }
+
+  res.status(200).send({});
 });

@@ -5,6 +5,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.doctorsController = void 0;
 const express_1 = require("express");
+const guards_1 = require("../utils/guards");
 exports.doctorsController = (0, express_1.Router)();
 console.log("OK");
 // This is a static mock array of doctors
@@ -19,4 +20,14 @@ const doctors = [
 exports.doctorsController.get("/", (req, res) => {
     console.log("[GET] /doctors/");
     res.json(doctors).status(200);
+});
+exports.doctorsController.get("/:id", (req, res) => {
+    console.log("[GET] /doctors/:id");
+    const id = req.params.id;
+    if (!(0, guards_1.isNumber)(id)) {
+        console.log('invalid id');
+        res.status(400).send('invalid id');
+        return;
+    }
+    res.status(200).send({});
 });

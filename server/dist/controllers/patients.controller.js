@@ -67,3 +67,21 @@ exports.patientsController.get("/:id/short", (req, res) => {
     res.status(404).send('ID must be a correct number');
     return;
 });
+exports.patientsController.get("/zipcode/:zipcode", (req, res) => {
+    console.log("[GET] /patient/");
+    const zip = String(req.params.zip);
+    if (!(0, guards_1.isString)(zip)) {
+        console.log('invalid string');
+        res.status(400).send('ID must be a zipcode');
+        return;
+    }
+    for (let i = 0; i < patients.length; i++) {
+        if (patients[i].address.zipCode == zip) {
+            const result = patients[i];
+            res.status(200).send(result);
+            break;
+        }
+    }
+    res.status(404).send('ID must be a correct number');
+    return;
+});

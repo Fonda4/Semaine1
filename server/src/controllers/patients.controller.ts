@@ -1,6 +1,6 @@
 import { Patient } from "../models/patient.model";
 import { Request, Response, Router } from "express";
-import { isNiss, isNumber } from "../utils/guards";
+import { isNiss, isNumber,isString } from "../utils/guards";
 
 
 export const patientsController = Router();
@@ -81,6 +81,29 @@ const id = parseInt(req.params.id);
   for ( let i = 0; i  < patients.length; i++ ){
     if (patients[i].id == id){
         res.status(200).send('id : '+patients[i].id+'<br> Prénom : '+patients[i].firstName +'<br> Nom : '+ patients[i].lastName);
+        break;
+    } 
+  }
+  
+  res.status(404).send('ID must be a correct number');
+  return;
+})
+
+patientsController.get("/zipcode/:zipcode", (req: Request, res: Response) => {
+  console.log("[GET] /patient/");
+
+const zip = String (req.params.zip);
+
+  if (!isString(zip)){
+    console.log('invalid string');
+    res.status(400).send('ID must be a zipcode');
+    return;
+  }
+
+  for ( let i = 0; i  < patients.length; i++ ){
+    if (patients[i].address.zipCode == zip){
+      const result = patients[i];
+        res.status(200).send( result);
         break;
     } 
   }

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.patientsController = void 0;
 const express_1 = require("express");
+const guards_1 = require("../utils/guards");
 exports.patientsController = (0, express_1.Router)();
 console.log("OK");
 const patients = [
@@ -15,4 +16,38 @@ const patients = [
 exports.patientsController.get("/", (req, res) => {
     console.log("[GET] /patients/");
     res.json(patients).status(200);
+});
+exports.patientsController.get("/:id", (req, res) => {
+    console.log("[GET] /doctors/:id");
+    const id = parseInt(req.params.id);
+    if (!(0, guards_1.isNumber)(id)) {
+        console.log('invalid id');
+        res.status(400).send('ID must be a number');
+        return;
+    }
+    for (let i = 0; i < patients.length; i++) {
+        if (patients[i].id == id) {
+            res.json(patients[i]).status(200);
+            break;
+        }
+    }
+    res.status(404).send('ID must be a correct number');
+    return;
+});
+exports.patientsController.get("/:niss", (req, res) => {
+    console.log("[GET] /patients/:niss");
+    const niss = String(req.params.niss);
+    if (!(0, guards_1.isNiss)(niss)) {
+        console.log('invalid id');
+        res.status(400).send('ID must be a number');
+        return;
+    }
+    for (let i = 0; i < patients.length; i++) {
+        if (patients[i].niss === niss) {
+            res.json(patients[i]).status(200);
+            break;
+        }
+    }
+    res.status(404).send('ID must be a correct number');
+    return;
 });

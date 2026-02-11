@@ -2,9 +2,10 @@
  * This file contains all the logic for the doctors controller
  */
 
-import { Request, Response, Router } from "express";
+import e, { Request, Response, Router } from "express";
 import { Doctor } from "../models/doctor.model";
 import { isNumber } from "../utils/guards";
+import { ElementFlags } from "typescript";
 
 export const doctorsController = Router();
 
@@ -28,13 +29,23 @@ doctorsController.get("/", (req: Request, res: Response) => {
 doctorsController.get("/:id", (req: Request, res: Response) => {
   console.log("[GET] /doctors/:id");
 
-const id = req.params.id;
+const id = parseInt(req.params.id);
 
   if (!isNumber(id)){
     console.log('invalid id');
-    res.status(400).send('invalid id');
+    res.status(400).send('ID must be a number');
     return;
   }
 
-  res.status(200).send({});
+  for ( let i = 0; i  < doctors.length; i++ ){
+    if (doctors[i].id == id){
+        res.json(doctors[i]).status(200);
+        break;
+    } 
+  }
+  
+  res.status(404).send('ID must be a correct number');
+  return;
+
+  
 });

@@ -11,7 +11,11 @@ const patients = [
         refDoctor: 1 },
     { id: 2, firstName: "Gabrielle", lastName: "Garcias Marques", birthDate: new Date("1978-12-03"), niss: "781203-123-45",
         address: { street: "Rue du merveilleux", number: "57", zipCode: "1000", city: "Bruxelles", country: "Belgique" },
-        refDoctor: 2 }
+        refDoctor: 2 },
+    { id: 3, firstName: "Tintin", lastName: "Reporter", birthDate: new Date("1929-01-10"), niss: "290110-999-88",
+        address: { street: "Château de Moulinsart", number: "1", zipCode: "5000", city: "Namur", country: "Belgique" },
+        refDoctor: 1
+    }
 ];
 exports.patientsController.get("/", (req, res) => {
     console.log("[GET] /patients/");
@@ -68,20 +72,37 @@ exports.patientsController.get("/:id/short", (req, res) => {
     return;
 });
 exports.patientsController.get("/zipcode/:zipcode", (req, res) => {
-    console.log("[GET] /patient/");
-    const zip = String(req.params.zip);
-    if (!(0, guards_1.isString)(zip)) {
-        console.log('invalid string');
-        res.status(400).send('ID must be a zipcode');
+    console.log("[GET] /patients/zipcode/:zipcode");
+    const zipcode = req.params.zipcode;
+    if (!(0, guards_1.isString)(zipcode)) {
+        console.log('invalid zipcode format');
+        res.status(400).send('Zipcode must be a string');
         return;
     }
+    let results = [];
     for (let i = 0; i < patients.length; i++) {
-        if (patients[i].address.zipCode == zip) {
-            const result = patients[i];
-            res.status(200).send(result);
-            break;
+        if (patients[i].address.zipCode === zipcode) {
+            results[results.length] = patients[i];
         }
     }
+    res.status(200).json(results);
     res.status(404).send('ID must be a correct number');
     return;
+});
+exports.patientsController.get("/doctor/:id/zipcode/:zipcode", (req, res) => {
+    console.log("[GET] /patients/doctor/:id/zipcode/:zipcode");
+    const id = parseInt(req.params.id);
+    const zipcode = req.params.zipcode;
+    if (!(0, guards_1.isNumber)(id) || !(0, guards_1.isString)(zipcode)) {
+        console.log('invalid parameters');
+        res.status(400).send('Invalid format: ID must be a number and Zipcode must be a string');
+        return;
+    }
+    let results = [];
+    for (let i = 0; i < patients.length; i++) {
+        if (patients[i].refDoctor === id && patients[i].address.zipCode === zipcode) {
+            results[results.length] = patients[i];
+        }
+    }
+    res.status(200).json(results);
 });

@@ -6,3 +6,9 @@ GET http://localhost:3000/patients/1 HTTP/1.1
 
 ###
 GET http://localhost:3000/patients/niss/640511-123-45 HTTP/1.1
+
+###
+GET http://localhost:3000/patients/1/short HTTP/1.1
+
+###
+GET http://localhost:3000/patients/zipcode/1000 HTTP/1.1

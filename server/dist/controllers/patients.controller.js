@@ -18,7 +18,7 @@ exports.patientsController.get("/", (req, res) => {
     res.json(patients).status(200);
 });
 exports.patientsController.get("/:id", (req, res) => {
-    console.log("[GET] /doctors/:id");
+    console.log("[GET] /short/:id");
     const id = parseInt(req.params.id);
     if (!(0, guards_1.isNumber)(id)) {
         console.log('invalid id');
@@ -34,17 +34,33 @@ exports.patientsController.get("/:id", (req, res) => {
     res.status(404).send('ID must be a correct number');
     return;
 });
-exports.patientsController.get("/:niss", (req, res) => {
+exports.patientsController.get("/niss/:niss", (req, res) => {
     console.log("[GET] /patients/:niss");
-    const niss = String(req.params.niss);
+    const niss = req.params.niss;
     if (!(0, guards_1.isNiss)(niss)) {
-        console.log('invalid id');
-        res.status(400).send('ID must be a number');
+        console.log('invalid niss');
+        res.status(400).send("NISS invalide ");
         return;
     }
     for (let i = 0; i < patients.length; i++) {
         if (patients[i].niss === niss) {
             res.json(patients[i]).status(200);
+            break;
+        }
+    }
+    res.status(404).send('niss must be real');
+});
+exports.patientsController.get("/:id/short", (req, res) => {
+    console.log("[GET] /patient/:id/short");
+    const id = parseInt(req.params.id);
+    if (!(0, guards_1.isNumber)(id)) {
+        console.log('invalid id');
+        res.status(400).send('ID must be a number');
+        return;
+    }
+    for (let i = 0; i < patients.length; i++) {
+        if (patients[i].id == id) {
+            res.status(200).send('id : ' + patients[i].id + '<br> Prénom : ' + patients[i].firstName + '<br> Nom : ' + patients[i].lastName);
             break;
         }
     }

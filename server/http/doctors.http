@@ -2,5 +2,14 @@
 GET http://localhost:3000/doctors HTTP/1.1
 
 ###
-    GET http://localhost:3000/doctors/1 HTTP/1.1
+GET http://localhost:3000/doctors/1 HTTP/1.1
 
+###
+POST http://localhost:3000/doctors/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "speciality": "cardiologist"
+}

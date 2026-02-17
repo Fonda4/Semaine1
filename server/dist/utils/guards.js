@@ -1,17 +1,12 @@
 "use strict";
-// import { Address } from "../models/address.model";
-// import { Appointment, AppointmentDTO, EAppointmentStatus, NewAppointmentDTO } from "../models/appointment.model";
-// import { Doctor } from "../models/doctor.model";
-// import { NewDoctorDTO } from "../models/doctor.model";
-// import { NewPatientDTO, Patient, PatientDTO } from "../models/patient.model";
-// import { DoctorDTO } from "../models/doctor.model";
-// import { NewUserDTO } from "../models/user.model";
-// import { MedicalExam } from "../models/medical_exam.model";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isNumber = isNumber;
 exports.isString = isString;
+exports.isNewDoctor = isNewDoctor;
 exports.isNiss = isNiss;
 exports.isDate = isDate;
+// import { NewUserDTO } from "../models/user.model";
+// import { MedicalExam } from "../models/medical_exam.model";
 /**
  * Function that validates that an input is a number
  * @param data any data
@@ -55,19 +50,17 @@ function isString(data) {
 //  * @param data 
 //  * @returns true if data is a valid Doctor model
 //  */
-// export function isNewDoctor(data: unknown): data is NewDoctorDTO {
-//   if (
-//     data && typeof data === 'object' &&
-//     'firstName' in data && 'lastName' in data &&
-//     'speciality' in data &&
-//     typeof (data as NewDoctorDTO).firstName === 'string' &&
-//     typeof (data as NewDoctorDTO).lastName === 'string'  &&
-//     typeof (data as NewDoctorDTO).speciality === 'string' 
-//   ) {
-//     return true;
-//   }
-//   return false;
-// }
+function isNewDoctor(data) {
+    if (data && typeof data === 'object' &&
+        'firstName' in data && 'lastName' in data &&
+        'speciality' in data &&
+        typeof data.firstName === 'string' &&
+        typeof data.lastName === 'string' &&
+        typeof data.speciality === 'string') {
+        return true;
+    }
+    return false;
+}
 /**
  * Function that validates that an input is a valid Patient model
  * @param data

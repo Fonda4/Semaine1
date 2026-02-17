@@ -2,17 +2,17 @@
  * This file contains all the logic for the doctors controller
  */
 
-import e, { Request, Response, Router } from "express";
-import { Doctor } from "../models/doctor.model";
-import { isNumber } from "../utils/guards";
-import { ElementFlags } from "typescript";
+import { Request, Response, Router } from "express";
+import { DoctorDTO, NewDoctorDTO , Doctor, NewDoctor} from "../models/doctor.model";
+import { isNumber, isString, isNewDoctor } from "../utils/guards";
+import { DoctorsMapper } from "../mappers/doctors.mapper";
 
 export const doctorsController = Router();
 
 console.log("OK")
 
 // This is a static mock array of doctors
-const doctors: Doctor[] = [
+const doctors: DoctorDTO[] = [
   {id:1, firstName: "Jules", lastName: "Valles", speciality: "Cardiologue"}, 
   {id:2, firstName: "Safouane", lastName: "Van Brussels", speciality: "General Practicien"}, 
   {id:3,firstName: "Paola", lastName: "Sanchez", speciality: "pulmonologist"}
@@ -23,13 +23,14 @@ const doctors: Doctor[] = [
  */
 doctorsController.get("/", (req: Request, res: Response) => {
   console.log("[GET] /doctors/");
-  res.json(doctors).status(200);
+  const doctorsDTO : DoctorDTO[] = doctors;
+  res.status(200).json(doctorsDTO);
 });
 
 doctorsController.get("/:id", (req: Request, res: Response) => {
   console.log("[GET] /doctors/:id");
 
-const id = parseInt(req.params.id);
+  const id = parseInt(req.params.id);
 
   if (!isNumber(id)){
     console.log('invalid id');
@@ -39,14 +40,36 @@ const id = parseInt(req.params.id);
 
   for ( let i = 0; i  < doctors.length; i++ ){
     if (doctors[i].id == id){
-        res.json(doctors[i]).status(200);
-        break;
+      const NewDoctorDTO = DoctorsMapper.toDTO(doctors[i]);
+      res.status(200).json(NewDoctorDTO);
+      return; 
     } 
   }
   
-  res.status(404).send('ID must be a correct number');
-  return;
-
+  
+  res.status(404).send('Doctor not found'); 
 });
 
+doctorsController.post("/", (req: Request, res: Response) => {
+  console.log("[POST] /doctors/");
 
+  const doctorData = req.body;
+  
+  if (!isNewDoctor(doctorData)) {
+    console.log("Données invalides");
+    res.status(400).send("Invalid doctor data: firstName, lastName and speciality are required.");
+    return; 
+  }
+
+  const newDoctorInfo: NewDoctor = DoctorsMapper.fromNewDTO(doctorData);
+  const newId = doctors.length + 1;
+  const newDoctor: Doctor = {
+    id: newId,
+    ...newDoctorInfo 
+  };
+
+  doctors.push(newDoctor);
+
+  console.log(`Docteur créé : ${newDoctor.firstName} ${newDoctor.lastName} (ID: ${newDoctor.id})`);
+  res.status(201).json(DoctorsMapper.toDTO(newDoctor));
+});

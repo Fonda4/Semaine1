@@ -1,9 +1,9 @@
 // import { Address } from "../models/address.model";
 // import { Appointment, AppointmentDTO, EAppointmentStatus, NewAppointmentDTO } from "../models/appointment.model";
 // import { Doctor } from "../models/doctor.model";
-// import { NewDoctorDTO } from "../models/doctor.model";
+ import { NewDoctorDTO } from "../models/doctor.model";
 // import { NewPatientDTO, Patient, PatientDTO } from "../models/patient.model";
-// import { DoctorDTO } from "../models/doctor.model";
+import { DoctorDTO } from "../models/doctor.model";
 // import { NewUserDTO } from "../models/user.model";
 // import { MedicalExam } from "../models/medical_exam.model";
 
@@ -55,20 +55,20 @@ export function isString(data: any): data is string {
 //  * @param data 
 //  * @returns true if data is a valid Doctor model
 //  */
-// export function isNewDoctor(data: unknown): data is NewDoctorDTO {
-//   if (
-//     data && typeof data === 'object' &&
-//     'firstName' in data && 'lastName' in data &&
-//     'speciality' in data &&
-//     typeof (data as NewDoctorDTO).firstName === 'string' &&
-//     typeof (data as NewDoctorDTO).lastName === 'string'  &&
-//     typeof (data as NewDoctorDTO).speciality === 'string' 
-//   ) {
-//     return true;
-//   }
+export function isNewDoctor(data: unknown): data is NewDoctorDTO {
+   if (
+     data && typeof data === 'object' &&
+     'firstName' in data && 'lastName' in data &&
+     'speciality' in data &&
+     typeof (data as NewDoctorDTO).firstName === 'string' &&
+     typeof (data as NewDoctorDTO).lastName === 'string'  &&
+     typeof (data as NewDoctorDTO).speciality === 'string' 
+   ) {
+     return true;
+   }
 
-//   return false;
-// }
+   return false;
+ }
 
 /**
  * Function that validates that an input is a valid Patient model

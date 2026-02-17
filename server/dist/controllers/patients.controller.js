@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.patientsController = void 0;
+const patients_mapper_1 = require("../mappers/patients.mapper");
 const express_1 = require("express");
 const guards_1 = require("../utils/guards");
 exports.patientsController = (0, express_1.Router)();
@@ -19,7 +20,8 @@ const patients = [
 ];
 exports.patientsController.get("/", (req, res) => {
     console.log("[GET] /patients/");
-    res.json(patients).status(200);
+    const patientsDTO = patients;
+    res.status(200).json(patientsDTO);
 });
 exports.patientsController.get("/:id", (req, res) => {
     console.log("[GET] /short/:id");
@@ -31,12 +33,12 @@ exports.patientsController.get("/:id", (req, res) => {
     }
     for (let i = 0; i < patients.length; i++) {
         if (patients[i].id == id) {
-            res.json(patients[i]).status(200);
-            break;
+            const PatientDTO = patients_mapper_1.PatientsMapper.toShortDTO(patients[i]);
+            res.status(200).json(PatientDTO);
+            return;
         }
     }
-    res.status(404).send('ID must be a correct number');
-    return;
+    res.status(404).send('Patient not found');
 });
 exports.patientsController.get("/niss/:niss", (req, res) => {
     console.log("[GET] /patients/:niss");
@@ -48,11 +50,12 @@ exports.patientsController.get("/niss/:niss", (req, res) => {
     }
     for (let i = 0; i < patients.length; i++) {
         if (patients[i].niss === niss) {
-            res.json(patients[i]).status(200);
-            break;
+            const PatientDTO = patients_mapper_1.PatientsMapper.toDTO(patients[i]);
+            res.status(200).json(PatientDTO);
+            return;
         }
     }
-    res.status(404).send('niss must be real');
+    res.status(404).send('Patient not found');
 });
 exports.patientsController.get("/:id/short", (req, res) => {
     console.log("[GET] /patient/:id/short");
@@ -64,12 +67,12 @@ exports.patientsController.get("/:id/short", (req, res) => {
     }
     for (let i = 0; i < patients.length; i++) {
         if (patients[i].id == id) {
-            res.status(200).send('id : ' + patients[i].id + '<br> Prénom : ' + patients[i].firstName + '<br> Nom : ' + patients[i].lastName);
-            break;
+            const PatientDTO = patients_mapper_1.PatientsMapper.toShortDTO(patients[i]);
+            res.status(200).json(PatientDTO);
+            return;
         }
     }
-    res.status(404).send('ID must be a correct number');
-    return;
+    res.status(404).send('Patient not found');
 });
 exports.patientsController.get("/zipcode/:zipcode", (req, res) => {
     console.log("[GET] /patients/zipcode/:zipcode");
@@ -82,12 +85,14 @@ exports.patientsController.get("/zipcode/:zipcode", (req, res) => {
     let results = [];
     for (let i = 0; i < patients.length; i++) {
         if (patients[i].address.zipCode === zipcode) {
-            results[results.length] = patients[i];
+            results.push(patients_mapper_1.PatientsMapper.toDTO(patients[i]));
         }
     }
-    res.status(200).json(results);
-    res.status(404).send('ID must be a correct number');
-    return;
+    if (results.length > 0) {
+        res.status(200).json(results);
+        return;
+    }
+    res.status(404).send('Patient not found');
 });
 exports.patientsController.get("/doctor/:id/zipcode/:zipcode", (req, res) => {
     console.log("[GET] /patients/doctor/:id/zipcode/:zipcode");
@@ -101,8 +106,12 @@ exports.patientsController.get("/doctor/:id/zipcode/:zipcode", (req, res) => {
     let results = [];
     for (let i = 0; i < patients.length; i++) {
         if (patients[i].refDoctor === id && patients[i].address.zipCode === zipcode) {
-            results[results.length] = patients[i];
+            results.push(patients_mapper_1.PatientsMapper.toDTO(patients[i]));
         }
     }
-    res.status(200).json(results);
+    if (results.length > 0) {
+        res.status(200).json(results);
+        return;
+    }
+    res.status(404).send('Patient not found');
 });

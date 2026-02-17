@@ -1,4 +1,5 @@
-import { Patient } from "../models/patient.model";
+import { PatientDTO, PatientShortDTO} from "../models/patient.model";
+import { PatientsMapper, } from "../mappers/patients.mapper";
 import { Request, Response, Router } from "express";
 import { isNiss, isNumber,isString } from "../utils/guards";
 
@@ -7,7 +8,7 @@ export const patientsController = Router();
 
 console.log("OK")
 
-const patients: Patient[] =[
+const patients: PatientDTO[] =[
     { id: 1, firstName: "John", lastName: "Lecarre",birthDate: new Date("1964-05-11"), niss: "640511-123-45",
     address:{ street: "Rue du polar",number: "273-B", zipCode: "1000", city: "Bruxelles", country: "Belgique"},
     refDoctor: 1},
@@ -22,13 +23,14 @@ const patients: Patient[] =[
 
 patientsController.get("/", (req: Request, res: Response) => {
   console.log("[GET] /patients/");
-  res.json(patients).status(200);
+  const patientsDTO : PatientDTO[] = patients;
+  res.status(200).json(patientsDTO);
 });
 
 patientsController.get("/:id", (req: Request, res: Response) => {
   console.log("[GET] /short/:id");
 
-const id = parseInt(req.params.id);
+  const id = parseInt(req.params.id);
 
   if (!isNumber(id)){
     console.log('invalid id');
@@ -38,20 +40,20 @@ const id = parseInt(req.params.id);
 
   for ( let i = 0; i  < patients.length; i++ ){
     if (patients[i].id == id){
-        res.json(patients[i]).status(200);
-        break;
+      const PatientDTO = PatientsMapper.toShortDTO(patients[i]);
+      res.status(200).json(PatientDTO);
+      return;
     } 
   }
   
-  res.status(404).send('ID must be a correct number');
-  return;
-})
+  res.status(404).send('Patient not found');
+});
 
 
 patientsController.get("/niss/:niss", (req: Request, res: Response) => {
   console.log("[GET] /patients/:niss");
 
-const niss = req.params.niss;
+  const niss = req.params.niss;
 
   if (!isNiss(niss)){
     console.log('invalid niss');
@@ -61,19 +63,19 @@ const niss = req.params.niss;
   
    for ( let i = 0; i  < patients.length; i++ ){
     if (patients[i].niss === niss){
-        res.json(patients[i]).status(200);
-        break;
+        const PatientDTO = PatientsMapper.toDTO(patients[i]);
+      res.status(200).json(PatientDTO);
+      return;
     } 
   }
 
-    res.status(404).send('niss must be real');
-
-})
+  res.status(404).send('Patient not found');
+});
 
 patientsController.get("/:id/short", (req: Request, res: Response) => {
   console.log("[GET] /patient/:id/short");
 
-const id = parseInt(req.params.id);
+  const id = parseInt(req.params.id);
 
   if (!isNumber(id)){
     console.log('invalid id');
@@ -83,37 +85,40 @@ const id = parseInt(req.params.id);
 
   for ( let i = 0; i  < patients.length; i++ ){
     if (patients[i].id == id){
-        res.status(200).send('id : '+patients[i].id+'<br> Prénom : '+patients[i].firstName +'<br> Nom : '+ patients[i].lastName);
-        break;
+        const PatientDTO = PatientsMapper.toShortDTO(patients[i]);
+      res.status(200).json(PatientDTO);        
+      return;
     } 
   }
   
-  res.status(404).send('ID must be a correct number');
-  return;
-})
+  res.status(404).send('Patient not found');
+});
 
 patientsController.get("/zipcode/:zipcode", (req: Request, res: Response) => {
   console.log("[GET] /patients/zipcode/:zipcode");
 
-const zipcode = req.params.zipcode;
+  const zipcode = req.params.zipcode;
 
   if (!isString(zipcode)) {
     console.log('invalid zipcode format');
     res.status(400).send('Zipcode must be a string');
     return;
   }
-let results: Patient[] = [];
+  let results: PatientDTO[] = [];
 
   for (let i = 0; i < patients.length; i++) {
     if (patients[i].address.zipCode === zipcode) {
-      
-      results[results.length] = patients[i];
-    }}
-  res.status(200).json(results);
+      results.push(PatientsMapper.toDTO(patients[i]));
+    }
+  }
+    
+  if (results.length > 0) {
+    res.status(200).json(results);
+    return;
+  }
 
-  res.status(404).send('ID must be a correct number');
-  return;
-})
+  res.status(404).send('Patient not found');
+});
 
 patientsController.get("/doctor/:id/zipcode/:zipcode", (req: Request, res: Response) => {
   console.log("[GET] /patients/doctor/:id/zipcode/:zipcode");
@@ -128,15 +133,18 @@ patientsController.get("/doctor/:id/zipcode/:zipcode", (req: Request, res: Respo
     return;
   }
 
-  let results: Patient[] = [];
+  let results: PatientDTO[] = [];
 
   for (let i = 0; i < patients.length; i++) {    
     if (patients[i].refDoctor === id && patients[i].address.zipCode === zipcode) {
-      
-      results[results.length] = patients[i];
-      
+      results.push(PatientsMapper.toDTO(patients[i]));
     }
   }
-  res.status(200).json(results);
-});
 
+  if (results.length > 0) {
+    res.status(200).json(results);
+    return;
+  }
+
+  res.status(404).send('Patient not found');
+});

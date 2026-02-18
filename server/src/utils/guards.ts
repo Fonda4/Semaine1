@@ -1,6 +1,6 @@
 // import { Address } from "../models/address.model";
 // import { Appointment, AppointmentDTO, EAppointmentStatus, NewAppointmentDTO } from "../models/appointment.model";
-// import { Doctor } from "../models/doctor.model";
+ import { Doctor } from "../models/doctor.model";
  import { NewDoctorDTO } from "../models/doctor.model";
 // import { NewPatientDTO, Patient, PatientDTO } from "../models/patient.model";
 import { DoctorDTO } from "../models/doctor.model";
@@ -30,21 +30,21 @@ export function isString(data: any): data is string {
  * @param data 
  * @returns true if data is a valid Doctor model
  */
-// export function isDoctor(data: unknown): data is Doctor {
-//   if (
-//     data && typeof data === 'object' &&
-//     ((data as Doctor).id === undefined || typeof (data as Doctor).id == 'number') &&
-//     'firstName' in data && 'lastName' in data &&
-//     'speciality' in data &&
-//     typeof (data as Doctor).firstName === 'string' &&
-//     typeof (data as Doctor).lastName === 'string'  &&
-//     typeof (data as Doctor).speciality === 'string' 
-//   ) {
-//     return true;
-//   }
+export function isDoctor(data: unknown): data is Doctor {
+  if (
+    data && typeof data === 'object' &&
+    ((data as Doctor).id === undefined || typeof (data as Doctor).id == 'number') &&
+    'firstName' in data && 'lastName' in data &&
+    'speciality' in data &&
+    typeof (data as Doctor).firstName === 'string' &&
+    typeof (data as Doctor).lastName === 'string'  &&
+    typeof (data as Doctor).speciality === 'string' 
+  ) {
+    return true;
+  }
 
-//   return false;
-// }
+  return false;
+}
 
 // export function isDoctorDTO(data: unknown): data is DoctorDTO {
 //   return isDoctor(data);

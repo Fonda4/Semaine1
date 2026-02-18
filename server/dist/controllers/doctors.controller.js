@@ -13,7 +13,7 @@ console.log("OK");
 const doctors = [
     { id: 1, firstName: "Jules", lastName: "Valles", speciality: "Cardiologue" },
     { id: 2, firstName: "Safouane", lastName: "Van Brussels", speciality: "General Practicien" },
-    { id: 3, firstName: "Paola", lastName: "Sanchez", speciality: "pulmonologist" }
+    { id: 3, firstName: "Paola", lastName: "Sanchez", speciality: "pulmonologiste" }
 ];
 /**
  * This function returns all the doctors
@@ -25,7 +25,7 @@ exports.doctorsController.get("/", (req, res) => {
 });
 exports.doctorsController.get("/:id", (req, res) => {
     console.log("[GET] /doctors/:id");
-    const id = parseInt(req.params.id);
+    const id = Number(req.params.id);
     if (!(0, guards_1.isNumber)(id)) {
         console.log('invalid id');
         res.status(400).send('ID must be a number');
@@ -42,16 +42,44 @@ exports.doctorsController.get("/:id", (req, res) => {
 });
 exports.doctorsController.post("/", (req, res) => {
     console.log("[POST] /doctors/");
-    const doctorData = req.body;
-    if (!(0, guards_1.isNewDoctor)(doctorData)) {
+    const NewDoctor = req.body;
+    if (!(0, guards_1.isNewDoctor)(NewDoctor)) {
         console.log("Données invalides");
-        res.status(400).send("Invalid doctor data: firstName, lastName and speciality are required.");
+        res.status(400).send("Invalid doctor data");
         return;
     }
-    const newDoctorInfo = doctors_mapper_1.DoctorsMapper.fromNewDTO(doctorData);
-    const newId = doctors.length + 1;
-    const newDoctor = Object.assign({ id: newId }, newDoctorInfo);
-    doctors.push(newDoctor);
-    console.log(`Docteur créé : ${newDoctor.firstName} ${newDoctor.lastName} (ID: ${newDoctor.id})`);
-    res.status(201).json(doctors_mapper_1.DoctorsMapper.toDTO(newDoctor));
+    const newDoctor = doctors_mapper_1.DoctorsMapper.fromNewDTO(NewDoctor);
+    console.log(doctors.length);
+    const doctor = {
+        id: doctors.length + 1,
+        firstName: newDoctor.firstName,
+        lastName: newDoctor.lastName,
+        speciality: newDoctor.speciality
+    };
+    doctors.push(doctor);
+    console.log(`Docteur créé : ${doctor.firstName} ${doctor.lastName} (ID: ${doctor.id})`);
+    res.status(201).json(doctors_mapper_1.DoctorsMapper.toDTO(doctor));
+});
+exports.doctorsController.put("/:id", (req, res) => {
+    const updatedDoctorDTO = req.body;
+    const id = Number(req.params.id);
+    if (!(0, guards_1.isDoctor)(updatedDoctorDTO)) {
+        return res.status(400).send("Invalid doctor");
+    }
+    if (!(0, guards_1.isNumber)(id)) {
+        return res.status(400).send("Invalid number");
+    }
+    const updatedDoctor = doctors_mapper_1.DoctorsMapper.fromDTO(updatedDoctorDTO);
+    let doctorIndex = -1;
+    for (let i = 0; i < doctors.length; i++) {
+        if (doctors[i].id === updatedDoctor.id) {
+            doctorIndex = i;
+            break;
+        }
+    }
+    if (doctorIndex === -1) {
+        return res.status(404).send("Doctor not found");
+    }
+    doctors[doctorIndex] = updatedDoctor;
+    res.status(200).send(doctors_mapper_1.DoctorsMapper.toDTO(updatedDoctor));
 });

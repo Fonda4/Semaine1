@@ -12,6 +12,15 @@ class DoctorsMapper {
     }
     static fromNewDTO(dto) {
         return {
+            id: dto.id,
+            firstName: dto.firstName,
+            lastName: dto.lastName,
+            speciality: dto.speciality
+        };
+    }
+    static fromDTO(dto) {
+        return {
+            id: dto.id,
             firstName: dto.firstName,
             lastName: dto.lastName,
             speciality: dto.speciality

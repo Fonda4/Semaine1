@@ -16,7 +16,10 @@ const patients = [
     { id: 3, firstName: "Tintin", lastName: "Reporter", birthDate: new Date("1929-01-10"), niss: "290110-999-88",
         address: { street: "Château de Moulinsart", number: "1", zipCode: "5000", city: "Namur", country: "Belgique" },
         refDoctor: 1
-    }
+    },
+    { id: 4, firstName: "Kamel", lastName: "Kebir", birthDate: new Date("1995-03-03"), niss: "950303-975-31",
+        address: { street: "Karmine Corp", number: "67", zipCode: "9400", city: "Aubervilliers", country: "France" },
+        refDoctor: 2 }
 ];
 exports.patientsController.get("/", (req, res) => {
     console.log("[GET] /patients/");
@@ -99,8 +102,8 @@ exports.patientsController.get("/doctor/:id/zipcode/:zipcode", (req, res) => {
     const id = parseInt(req.params.id);
     const zipcode = req.params.zipcode;
     if (!(0, guards_1.isNumber)(id) || !(0, guards_1.isString)(zipcode)) {
-        console.log('invalid parameters');
-        res.status(400).send('Invalid format: ID must be a number and Zipcode must be a string');
+        console.log("invalid parameters");
+        res.status(400).send("Invalid format");
         return;
     }
     let results = [];

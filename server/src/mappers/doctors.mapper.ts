@@ -12,6 +12,17 @@ export class DoctorsMapper {
   }
   public static fromNewDTO(dto: NewDoctorDTO): NewDoctor {
     return {
+      id:dto.id,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      speciality: dto.speciality
+    };
+
+}
+
+public static fromDTO(dto: NewDoctorDTO): NewDoctor {
+    return {
+      id:dto.id,
       firstName: dto.firstName,
       lastName: dto.lastName,
       speciality: dto.speciality

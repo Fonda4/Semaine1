@@ -4,7 +4,7 @@
 
 import { Request, Response, Router } from "express";
 import { DoctorDTO, NewDoctorDTO , Doctor, NewDoctor} from "../models/doctor.model";
-import { isNumber, isString, isNewDoctor } from "../utils/guards";
+import { isNumber, isString, isNewDoctor, isDoctor } from "../utils/guards";
 import { DoctorsMapper } from "../mappers/doctors.mapper";
 
 export const doctorsController = Router();
@@ -15,7 +15,7 @@ console.log("OK")
 const doctors: DoctorDTO[] = [
   {id:1, firstName: "Jules", lastName: "Valles", speciality: "Cardiologue"}, 
   {id:2, firstName: "Safouane", lastName: "Van Brussels", speciality: "General Practicien"}, 
-  {id:3,firstName: "Paola", lastName: "Sanchez", speciality: "pulmonologist"}
+  {id:3,firstName: "Paola", lastName: "Sanchez", speciality: "pulmonologiste"}
 ];
 
 /**
@@ -30,7 +30,7 @@ doctorsController.get("/", (req: Request, res: Response) => {
 doctorsController.get("/:id", (req: Request, res: Response) => {
   console.log("[GET] /doctors/:id");
 
-  const id = parseInt(req.params.id);
+  const id = Number(req.params.id);
 
   if (!isNumber(id)){
     console.log('invalid id');
@@ -53,23 +53,52 @@ doctorsController.get("/:id", (req: Request, res: Response) => {
 doctorsController.post("/", (req: Request, res: Response) => {
   console.log("[POST] /doctors/");
 
-  const doctorData = req.body;
+  const NewDoctor: NewDoctorDTO = req.body;
   
-  if (!isNewDoctor(doctorData)) {
+  if (!isNewDoctor(NewDoctor)) {
     console.log("Données invalides");
-    res.status(400).send("Invalid doctor data: firstName, lastName and speciality are required.");
+    res.status(400).send("Invalid doctor data");
     return; 
   }
 
-  const newDoctorInfo: NewDoctor = DoctorsMapper.fromNewDTO(doctorData);
-  const newId = doctors.length + 1;
-  const newDoctor: Doctor = {
-    id: newId,
-    ...newDoctorInfo 
-  };
+  const newDoctor: NewDoctor = DoctorsMapper.fromNewDTO(NewDoctor);
+  console.log(doctors.length)
+  const doctor: Doctor = {
+    id: doctors.length + 1,
+    firstName: newDoctor.firstName,
+    lastName:newDoctor.lastName,
+    speciality: newDoctor.speciality 
+  }
 
-  doctors.push(newDoctor);
+  doctors.push(doctor);
 
-  console.log(`Docteur créé : ${newDoctor.firstName} ${newDoctor.lastName} (ID: ${newDoctor.id})`);
-  res.status(201).json(DoctorsMapper.toDTO(newDoctor));
+  console.log(`Docteur créé : ${doctor.firstName} ${doctor.lastName} (ID: ${doctor.id})`);
+  res.status(201).json(DoctorsMapper.toDTO(doctor));
+});
+
+doctorsController .put("/:id", (req: Request, res : Response) => {
+  const updatedDoctorDTO: DoctorDTO = req.body;
+  const id = Number(req.params.id);
+  if (!isDoctor(updatedDoctorDTO)) {
+  return res.status(400).send("Invalid doctor");
+  }
+  if (!isNumber(id)) {
+  return res.status(400).send("Invalid number");
+  }
+
+  const updatedDoctor: Doctor = DoctorsMapper.fromDTO(updatedDoctorDTO);
+  
+  let doctorIndex = -1;
+
+  for ( let i = 0; i<doctors.length ; i++) {
+    if (doctors [i]. id === updatedDoctor.id) {
+      doctorIndex = i;
+      break;
+    }
+  }
+  if (doctorIndex === -1) {
+    return res.status(404).send("Doctor not found");
+  }
+  doctors[doctorIndex] = updatedDoctor;
+  res.status(200).send(DoctorsMapper.toDTO(updatedDoctor));
 });

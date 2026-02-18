@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isNumber = isNumber;
 exports.isString = isString;
+exports.isDoctor = isDoctor;
 exports.isNewDoctor = isNewDoctor;
 exports.isNiss = isNiss;
 exports.isDate = isDate;
@@ -28,20 +29,18 @@ function isString(data) {
  * @param data
  * @returns true if data is a valid Doctor model
  */
-// export function isDoctor(data: unknown): data is Doctor {
-//   if (
-//     data && typeof data === 'object' &&
-//     ((data as Doctor).id === undefined || typeof (data as Doctor).id == 'number') &&
-//     'firstName' in data && 'lastName' in data &&
-//     'speciality' in data &&
-//     typeof (data as Doctor).firstName === 'string' &&
-//     typeof (data as Doctor).lastName === 'string'  &&
-//     typeof (data as Doctor).speciality === 'string' 
-//   ) {
-//     return true;
-//   }
-//   return false;
-// }
+function isDoctor(data) {
+    if (data && typeof data === 'object' &&
+        (data.id === undefined || typeof data.id == 'number') &&
+        'firstName' in data && 'lastName' in data &&
+        'speciality' in data &&
+        typeof data.firstName === 'string' &&
+        typeof data.lastName === 'string' &&
+        typeof data.speciality === 'string') {
+        return true;
+    }
+    return false;
+}
 // export function isDoctorDTO(data: unknown): data is DoctorDTO {
 //   return isDoctor(data);
 // }

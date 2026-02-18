@@ -12,12 +12,14 @@ export interface DoctorDTO {
 }
 
 export interface NewDoctorDTO {
+  id:number;
   firstName: string;
   lastName: string;
   speciality: string;
 }
 
 export interface NewDoctor {
+  id : number;
   firstName: string;
   lastName: string;
   speciality: string;

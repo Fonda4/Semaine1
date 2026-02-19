@@ -3,9 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.isNumber = isNumber;
 exports.isString = isString;
 exports.isDoctor = isDoctor;
+exports.isDoctorDTO = isDoctorDTO;
 exports.isNewDoctor = isNewDoctor;
+exports.isPatient = isPatient;
 exports.isNiss = isNiss;
-exports.isDate = isDate;
 // import { NewUserDTO } from "../models/user.model";
 // import { MedicalExam } from "../models/medical_exam.model";
 /**
@@ -41,9 +42,9 @@ function isDoctor(data) {
     }
     return false;
 }
-// export function isDoctorDTO(data: unknown): data is DoctorDTO {
-//   return isDoctor(data);
-// }
+function isDoctorDTO(data) {
+    return isDoctor(data);
+}
 // /**
 //  * Function that validates that an input is a valid Doctor model
 //  * @param data 
@@ -65,23 +66,21 @@ function isNewDoctor(data) {
  * @param data
  * @returns true if data is a valid Patient model
  */
-// export function isPatient(data: unknown): data is PatientDTO {
-//   if(
-//     data && typeof data === 'object' &&
-//     ((data as Patient).id === undefined || typeof (data as Patient).id == 'number') &&
-//     'firstName' in data && 'lastName' in data &&
-//     'birthDate' in data && 'niss' in data &&
-//     'address' in data && 'refDoctor' in data &&
-//     typeof (data as Patient).firstName === 'string' &&
-//     ((typeof (data as Patient).birthDate === 'string') || ((data as Patient).birthDate instanceof Date)) &&
-//     typeof (data as Patient).niss === 'string' &&
-//     typeof (data as Patient).address === 'object' && isAddress((data as Patient).address) &&
-//     typeof (data as Patient).refDoctor === 'number'
-//   ) {
-//     return true;
-//   }
-//   return false;
-// }
+function isPatient(data) {
+    if (data && typeof data === 'object' &&
+        (data.id === undefined || typeof data.id == 'number') &&
+        'firstName' in data && 'lastName' in data &&
+        'birthDate' in data && 'niss' in data &&
+        'address' in data && 'refDoctor' in data &&
+        typeof data.firstName === 'string' &&
+        ((typeof data.birthDate === 'string') || (data.birthDate instanceof Date)) &&
+        typeof data.niss === 'string' &&
+        typeof data.address === 'object' && isAddress(data.address) &&
+        typeof data.refDoctor === 'number') {
+        return true;
+    }
+    return false;
+}
 // export function isNewPatient(data: unknown): data is NewPatientDTO {
 //   if (
 //     data && typeof data === 'object' &&
@@ -102,12 +101,12 @@ function isNewDoctor(data) {
  * @param data any data
  * @returns true if data is a valid Address
  */
-// function isAddress(data: any): data is Address {
-//   return data && typeof data === 'object' &&
-//   typeof((data as Address).street) === 'string' && typeof((data as Address).number) === 'string' &&
-//   typeof((data as Address).zipCode) === 'string' && typeof((data as Address).city) === 'string' &&
-//   typeof((data as Address).country) === 'string';
-// }
+function isAddress(data) {
+    return data && typeof data === 'object' &&
+        typeof (data.street) === 'string' && typeof (data.number) === 'string' &&
+        typeof (data.zipCode) === 'string' && typeof (data.city) === 'string' &&
+        typeof (data.country) === 'string';
+}
 /**
  * Function that validates that an input is a valid niss
  * A valid niss is a string with the following format: XXXXXX-XXX-XX
@@ -118,9 +117,9 @@ function isNiss(data) {
     return typeof data === 'string' &&
         data.match(/^\d{6}-\d{3}-\d{2}$/) !== null;
 }
-function isDate(data) {
-    return data != null && data != undefined && (typeof data === 'object') && (data instanceof Date);
-}
+// export function isDate(data: unknown): data is Date{
+//   return data != null && data != undefined && (typeof data === 'object') && (data instanceof Date);
+// }
 // export function isNewUser(data: unknown): data is NewUserDTO {
 //   return data != null && data != undefined && typeof data === 'object' &&
 //     'lastName' in data && 'firstName' in data &&

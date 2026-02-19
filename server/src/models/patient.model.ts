@@ -23,3 +23,21 @@ export interface PatientShortDTO {
   firstName: string;
   lastName: string;
 }
+
+export interface NewPatientDTO {
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  niss: string;
+  address: Address;
+  refDoctor: number;
+}
+
+export interface NewPatient {
+  firstName: string;
+  lastName: string;
+  birthDate: Date;
+  niss: string;
+  address: Address;
+  refDoctor: number;
+}

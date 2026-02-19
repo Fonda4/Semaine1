@@ -118,3 +118,75 @@ exports.patientsController.get("/doctor/:id/zipcode/:zipcode", (req, res) => {
     }
     res.status(404).send('Patient not found');
 });
+exports.patientsController.post("/", (req, res) => {
+    const newPatientDTO = req.body;
+    if (!newPatientDTO.firstName || !newPatientDTO.lastName || !newPatientDTO.birthDate) {
+        res.status(400).send("Invalid patient data");
+        return;
+    }
+    const newPatient = patients_mapper_1.PatientsMapper.fromNewDTO(newPatientDTO);
+    let newId = 0;
+    for (let i = 0; i < patients.length; i++) {
+        if (patients[i].id > newId) {
+            newId = patients[i].id;
+        }
+    }
+    newId++;
+    const patient = {
+        id: newId,
+        firstName: newPatient.firstName,
+        lastName: newPatient.lastName,
+        birthDate: newPatient.birthDate,
+        niss: newPatient.niss,
+        address: newPatient.address,
+        refDoctor: newPatient.refDoctor
+    };
+    patients[patients.length] = patient;
+    res.status(201).json(patients_mapper_1.PatientsMapper.toDTO(patient));
+});
+exports.patientsController.put("/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    const updatedPatientDTO = req.body;
+    if (!(0, guards_1.isNumber)(id)) {
+        res.status(400).send("ID parameter must be a number");
+        return;
+    }
+    if (id !== updatedPatientDTO.id) {
+        res.status(400).send("Body ID does not match Parameter ID");
+        return;
+    }
+    let index = -1;
+    for (let i = 0; i < patients.length; i++) {
+        if (patients[i].id === id) {
+            index = i;
+            break;
+        }
+    }
+    if (index === -1) {
+        res.status(404).send("Patient not found");
+        return;
+    }
+    const updatedPatient = patients_mapper_1.PatientsMapper.fromDTO(updatedPatientDTO);
+    patients[index] = updatedPatient;
+    res.status(200).json(patients_mapper_1.PatientsMapper.toDTO(patients[index]));
+});
+exports.patientsController.delete("/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    if (!(0, guards_1.isNumber)(id)) {
+        res.status(400).send("Invalid or missing id");
+        return;
+    }
+    let index = -1;
+    for (let i = 0; i < patients.length; i++) {
+        if (patients[i].id === id) {
+            index = i;
+            break;
+        }
+    }
+    if (index === -1) {
+        res.status(404).send("Patient not found");
+        return;
+    }
+    patients.splice(index, 1);
+    res.status(200).send();
+});

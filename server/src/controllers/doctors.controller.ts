@@ -3,7 +3,7 @@
  */
 
 import { Request, Response, Router } from "express";
-import { DoctorDTO, NewDoctorDTO , Doctor, NewDoctor} from "../models/doctor.model";
+import { DoctorDTO, NewDoctorDTO , Doctor, NewDoctor, DoctorFilter} from "../models/doctor.model";
 import { isNumber, isString, isNewDoctor, isDoctor } from "../utils/guards";
 import { DoctorsMapper } from "../mappers/doctors.mapper";
 
@@ -50,6 +50,34 @@ doctorsController.get("/:id", (req: Request, res: Response) => {
   res.status(404).send('Doctor not found'); 
 });
 
+doctorsController.get("/", (req: Request, res: Response) => {
+  const specialityValue = req.query.speciality;
+  const filter: DoctorFilter = {};
+
+  if (isString(specialityValue)) {
+    filter.speciality = specialityValue;
+  }
+
+  let filteredDoctors = doctors;
+
+  if (filter.speciality) {
+    let temp: Doctor[] = [];
+    for (let i = 0; i < doctors.length; i++) {
+      if (doctors[i].speciality === filter.speciality) {
+        temp[temp.length] = doctors[i];
+      }
+    }
+    filteredDoctors = temp;
+  }
+
+  let doctorsDTO: DoctorDTO[] = [];
+  for (let i = 0; i < filteredDoctors.length; i++) {
+      doctorsDTO[i] = DoctorsMapper.toDTO(filteredDoctors[i]);
+  }
+
+  res.status(200).json(doctorsDTO);
+});
+
 doctorsController.post("/", (req: Request, res: Response) => {
   console.log("[POST] /doctors/");
 
@@ -76,7 +104,8 @@ doctorsController.post("/", (req: Request, res: Response) => {
   res.status(201).json(DoctorsMapper.toDTO(doctor));
 });
 
-doctorsController .put("/:id", (req: Request, res : Response) => {
+doctorsController.put("/:id", (req: Request, res : Response) => {
+  console.log("[PUT] /doctors/");
   const updatedDoctorDTO: DoctorDTO = req.body;
   const id = Number(req.params.id);
   if (!isDoctor(updatedDoctorDTO)) {
@@ -101,4 +130,30 @@ doctorsController .put("/:id", (req: Request, res : Response) => {
   }
   doctors[doctorIndex] = updatedDoctor;
   res.status(200).send(DoctorsMapper.toDTO(updatedDoctor));
+});
+
+doctorsController.delete("/:id", (req: Request, res : Response) => {
+
+const id  = Number(req.params.id);
+let index = -1;
+
+if(!isNumber(id)){
+  return res.status(400).send("incorrect id");
+}
+
+
+  for (let i = 0; i < doctors.length; i++) {
+    if (doctors[i].id === id) {
+      index = i; 
+      return;    
+    }
+  }
+
+  if (index === -1) {
+    res.status(404).send("Doctor not found");
+    return;
+  }
+  doctors.splice(index, 1);
+
+  res.status(200).send();
 });

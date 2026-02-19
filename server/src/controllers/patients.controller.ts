@@ -1,4 +1,4 @@
-import { PatientDTO, PatientShortDTO} from "../models/patient.model";
+import { PatientDTO, PatientShortDTO, NewPatientDTO } from "../models/patient.model";
 import { PatientsMapper, } from "../mappers/patients.mapper";
 import { Request, Response, Router } from "express";
 import { isNiss, isNumber,isString } from "../utils/guards";
@@ -51,7 +51,6 @@ patientsController.get("/:id", (req: Request, res: Response) => {
   
   res.status(404).send('Patient not found');
 });
-
 
 patientsController.get("/niss/:niss", (req: Request, res: Response) => {
   console.log("[GET] /patients/:niss");
@@ -150,4 +149,95 @@ patientsController.get("/doctor/:id/zipcode/:zipcode", (req: Request, res: Respo
   }
 
   res.status(404).send('Patient not found');
+});
+
+patientsController.post("/", (req: Request, res: Response) => {
+  const newPatientDTO: NewPatientDTO = req.body;
+
+  if (!newPatientDTO.firstName || !newPatientDTO.lastName || !newPatientDTO.birthDate) {
+    res.status(400).send("Invalid patient data");
+    return;
+  }
+  const newPatient = PatientsMapper.fromNewDTO(newPatientDTO);
+
+  let newId = 0;
+  for (let i = 0; i < patients.length; i++) {
+    if (patients[i].id > newId) {
+      newId = patients[i].id;
+    }
+  }
+  newId++;
+
+  const patient: PatientDTO = {
+    id: newId,
+    firstName: newPatient.firstName,
+    lastName: newPatient.lastName,
+    birthDate: newPatient.birthDate,
+    niss: newPatient.niss,
+    address: newPatient.address,
+    refDoctor: newPatient.refDoctor
+  };
+
+  patients[patients.length] = patient;
+
+  res.status(201).json(PatientsMapper.toDTO(patient));
+});
+
+patientsController.put("/:id", (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const updatedPatientDTO: PatientDTO = req.body;
+
+  if (!isNumber(id)) {
+    res.status(400).send("ID parameter must be a number");
+    return;
+  }
+
+  if (id !== updatedPatientDTO.id) {
+    res.status(400).send("Body ID does not match Parameter ID");
+    return;
+  }
+
+  let index = -1;
+  for (let i = 0; i < patients.length; i++) {
+    if (patients[i].id === id) {
+      index = i;
+      break;
+    }
+  }
+
+  if (index === -1) {
+    res.status(404).send("Patient not found");
+    return;
+  }
+
+  const updatedPatient = PatientsMapper.fromDTO(updatedPatientDTO);
+  patients[index] = updatedPatient;
+
+  res.status(200).json(PatientsMapper.toDTO(patients[index]));
+});
+
+patientsController.delete("/:id", (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+
+  if (!isNumber(id)) {
+    res.status(400).send("Invalid or missing id");
+    return;
+  }
+
+  let index = -1;
+  for (let i = 0; i < patients.length; i++) {
+    if (patients[i].id === id) {
+      index = i;
+      break;
+    }
+  }
+
+  if (index === -1) {
+    res.status(404).send("Patient not found");
+    return;
+  }
+
+  patients.splice(index, 1);
+  
+  res.status(200).send();
 });

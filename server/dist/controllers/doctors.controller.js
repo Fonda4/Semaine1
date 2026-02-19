@@ -40,6 +40,28 @@ exports.doctorsController.get("/:id", (req, res) => {
     }
     res.status(404).send('Doctor not found');
 });
+exports.doctorsController.get("/", (req, res) => {
+    const specialityValue = req.query.speciality;
+    const filter = {};
+    if ((0, guards_1.isString)(specialityValue)) {
+        filter.speciality = specialityValue;
+    }
+    let filteredDoctors = doctors;
+    if (filter.speciality) {
+        let temp = [];
+        for (let i = 0; i < doctors.length; i++) {
+            if (doctors[i].speciality === filter.speciality) {
+                temp[temp.length] = doctors[i];
+            }
+        }
+        filteredDoctors = temp;
+    }
+    let doctorsDTO = [];
+    for (let i = 0; i < filteredDoctors.length; i++) {
+        doctorsDTO[i] = doctors_mapper_1.DoctorsMapper.toDTO(filteredDoctors[i]);
+    }
+    res.status(200).json(doctorsDTO);
+});
 exports.doctorsController.post("/", (req, res) => {
     console.log("[POST] /doctors/");
     const NewDoctor = req.body;
@@ -61,6 +83,7 @@ exports.doctorsController.post("/", (req, res) => {
     res.status(201).json(doctors_mapper_1.DoctorsMapper.toDTO(doctor));
 });
 exports.doctorsController.put("/:id", (req, res) => {
+    console.log("[PUT] /doctors/");
     const updatedDoctorDTO = req.body;
     const id = Number(req.params.id);
     if (!(0, guards_1.isDoctor)(updatedDoctorDTO)) {
@@ -82,4 +105,23 @@ exports.doctorsController.put("/:id", (req, res) => {
     }
     doctors[doctorIndex] = updatedDoctor;
     res.status(200).send(doctors_mapper_1.DoctorsMapper.toDTO(updatedDoctor));
+});
+exports.doctorsController.delete("/:id", (req, res) => {
+    const id = Number(req.params.id);
+    let index = -1;
+    if (!(0, guards_1.isNumber)(id)) {
+        return res.status(400).send("incorrect id");
+    }
+    for (let i = 0; i < doctors.length; i++) {
+        if (doctors[i].id === id) {
+            index = i;
+            return;
+        }
+    }
+    if (index === -1) {
+        res.status(404).send("Doctor not found");
+        return;
+    }
+    doctors.splice(index, 1);
+    res.status(200).send();
 });

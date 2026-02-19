@@ -1,4 +1,4 @@
-import { Patient, PatientDTO, PatientShortDTO } from "../models/patient.model";
+import { Patient, PatientDTO, PatientShortDTO, NewPatient, NewPatientDTO } from "../models/patient.model";
 
 export class PatientsMapper {
   
@@ -19,6 +19,29 @@ export class PatientsMapper {
       id: patient.id,
       firstName: patient.firstName,
       lastName: patient.lastName
+    };
+  }
+
+  public static fromNewDTO(dto: NewPatientDTO): NewPatient {
+    return {
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      birthDate: new Date(dto.birthDate),
+      niss: dto.niss,
+      address: dto.address,
+      refDoctor: dto.refDoctor
+    };
+  }
+
+  public static fromDTO(dto: PatientDTO): Patient {
+    return {
+      id: dto.id,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      birthDate: new Date(dto.birthDate),
+      niss: dto.niss,
+      address: dto.address,
+      refDoctor: dto.refDoctor
     };
   }
 }

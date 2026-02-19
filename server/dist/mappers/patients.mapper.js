@@ -20,5 +20,26 @@ class PatientsMapper {
             lastName: patient.lastName
         };
     }
+    static fromNewDTO(dto) {
+        return {
+            firstName: dto.firstName,
+            lastName: dto.lastName,
+            birthDate: new Date(dto.birthDate),
+            niss: dto.niss,
+            address: dto.address,
+            refDoctor: dto.refDoctor
+        };
+    }
+    static fromDTO(dto) {
+        return {
+            id: dto.id,
+            firstName: dto.firstName,
+            lastName: dto.lastName,
+            birthDate: new Date(dto.birthDate),
+            niss: dto.niss,
+            address: dto.address,
+            refDoctor: dto.refDoctor
+        };
+    }
 }
 exports.PatientsMapper = PatientsMapper;

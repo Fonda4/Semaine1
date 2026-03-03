@@ -6,7 +6,7 @@ const express_1 = require("express");
 const guards_1 = require("../utils/guards");
 const logger_service_1 = require("../services/logger.service");
 exports.patientsController = (0, express_1.Router)();
-console.log("OK");
+logger_service_1.LoggerService.info("OK");
 const patients = [
     { id: 1, firstName: "John", lastName: "Lecarre", birthDate: new Date("1964-05-11"), niss: "640511-123-45",
         address: { street: "Rue du polar", number: "273-B", zipCode: "1000", city: "Bruxelles", country: "Belgique" },
@@ -22,16 +22,16 @@ const patients = [
         address: { street: "Karmine Corp", number: "67", zipCode: "9400", city: "Aubervilliers", country: "France" },
         refDoctor: 2 }
 ];
-exports.patientsController.get("/", (req, res) => {
-    console.log("[GET] /patients/");
-    const patientsDTO = patients;
-    res.status(200).json(patientsDTO);
-});
+// patientsController.get("/", (req: Request, res: Response) => {
+//   console.log("[GET] /patients/");
+//   const patientsDTO : PatientDTO[] = patients;
+//   res.status(200).json(patientsDTO);
+// });
 exports.patientsController.get("/:id", (req, res) => {
-    console.log("[GET] /short/:id");
-    const id = parseInt(req.params.id);
+    logger_service_1.LoggerService.info(`GET /patients/:id - id: ${req.params.id}`);
+    const id = Number(req.params.id);
     if (!(0, guards_1.isNumber)(id)) {
-        console.log('invalid id');
+        logger_service_1.LoggerService.error(`Invalid ID: ${id}`);
         res.status(400).send('ID must be a number');
         return;
     }
@@ -45,10 +45,10 @@ exports.patientsController.get("/:id", (req, res) => {
     res.status(404).send('Patient not found');
 });
 exports.patientsController.get("/niss/:niss", (req, res) => {
-    console.log("[GET] /patients/:niss");
+    logger_service_1.LoggerService.info("[GET] /patients/:niss");
     const niss = req.params.niss;
     if (!(0, guards_1.isNiss)(niss)) {
-        console.log('invalid niss');
+        logger_service_1.LoggerService.info('invalid niss');
         res.status(400).send("NISS invalide ");
         return;
     }
@@ -62,10 +62,10 @@ exports.patientsController.get("/niss/:niss", (req, res) => {
     res.status(404).send('Patient not found');
 });
 exports.patientsController.get("/:id/short", (req, res) => {
-    console.log("[GET] /patient/:id/short");
+    logger_service_1.LoggerService.info("[GET] /patient/:id/short");
     const id = parseInt(req.params.id);
     if (!(0, guards_1.isNumber)(id)) {
-        console.log('invalid id');
+        logger_service_1.LoggerService.error('invalid id');
         res.status(400).send('ID must be a number');
         return;
     }
@@ -79,10 +79,10 @@ exports.patientsController.get("/:id/short", (req, res) => {
     res.status(404).send('Patient not found');
 });
 exports.patientsController.get("/zipcode/:zipcode", (req, res) => {
-    console.log("[GET] /patients/zipcode/:zipcode");
+    logger_service_1.LoggerService.info("[GET] /patients/zipcode/:zipcode");
     const zipcode = req.params.zipcode;
     if (!(0, guards_1.isString)(zipcode)) {
-        console.log('invalid zipcode format');
+        logger_service_1.LoggerService.error('invalid zipcode format');
         res.status(400).send('Zipcode must be a string');
         return;
     }
@@ -99,11 +99,11 @@ exports.patientsController.get("/zipcode/:zipcode", (req, res) => {
     res.status(404).send('Patient not found');
 });
 exports.patientsController.get("/doctor/:id/zipcode/:zipcode", (req, res) => {
-    console.log("[GET] /patients/doctor/:id/zipcode/:zipcode");
+    logger_service_1.LoggerService.info("[GET] /patients/doctor/:id/zipcode/:zipcode");
     const id = parseInt(req.params.id);
     const zipcode = req.params.zipcode;
     if (!(0, guards_1.isNumber)(id) || !(0, guards_1.isString)(zipcode)) {
-        console.log("invalid parameters");
+        logger_service_1.LoggerService.error("Invalid parameters");
         res.status(400).send("Invalid format");
         return;
     }
@@ -122,27 +122,27 @@ exports.patientsController.get("/doctor/:id/zipcode/:zipcode", (req, res) => {
 exports.patientsController.get("/", (req, res) => {
     logger_service_1.LoggerService.info("[GET] /patients/");
     const rawZipCode = req.query.zipCode;
-    const filter = {
-        zipCode: typeof rawZipCode === 'string' ? rawZipCode : undefined
-    };
     let results = [];
-    if (filter.zipCode) {
-        logger_service_1.LoggerService.info(`Filtrage des patients par code postal : ${filter.zipCode}`);
+    if ((0, guards_1.isString)(rawZipCode)) {
+        logger_service_1.LoggerService.info(`Filtrage des patients par code postal : ${rawZipCode}`);
         for (let i = 0; i < patients.length; i++) {
-            if (patients[i].address.zipCode === filter.zipCode) {
+            if (patients[i].address.zipCode === rawZipCode) {
                 results.push(patients_mapper_1.PatientsMapper.toDTO(patients[i]));
             }
         }
     }
     else {
-        logger_service_1.LoggerService.info("Aucun filtre fourni, renvoi de la liste complète des patients.");
-        results = patients;
+        logger_service_1.LoggerService.info("Aucun filtre fourni, renvoi de la liste complète.");
+        for (let i = 0; i < patients.length; i++) {
+            results.push(patients_mapper_1.PatientsMapper.toDTO(patients[i]));
+        }
     }
     res.status(200).json(results);
 });
 exports.patientsController.post("/", (req, res) => {
     const newPatientDTO = req.body;
     if (!newPatientDTO.firstName || !newPatientDTO.lastName || !newPatientDTO.birthDate) {
+        logger_service_1.LoggerService.error("POST /patients - Invalid new patient data");
         res.status(400).send("Invalid patient data");
         return;
     }
@@ -167,14 +167,16 @@ exports.patientsController.post("/", (req, res) => {
     res.status(201).json(patients_mapper_1.PatientsMapper.toDTO(patient));
 });
 exports.patientsController.put("/:id", (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = Number(req.params.id);
     const updatedPatientDTO = req.body;
     if (!(0, guards_1.isNumber)(id)) {
+        logger_service_1.LoggerService.error("PUT /patients/:id - Invalid ID parameter");
         res.status(400).send("ID parameter must be a number");
         return;
     }
     if (id !== updatedPatientDTO.id) {
-        res.status(400).send("Body ID does not match Parameter ID");
+        logger_service_1.LoggerService.error("PUT /patients/:id - Invalid body");
+        res.status(400).send("Invalid patient data");
         return;
     }
     let index = -1;
@@ -185,6 +187,7 @@ exports.patientsController.put("/:id", (req, res) => {
         }
     }
     if (index === -1) {
+        logger_service_1.LoggerService.error(`PUT /patients/:id - Patient with ID ${id} not found`);
         res.status(404).send("Patient not found");
         return;
     }

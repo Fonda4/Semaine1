@@ -6,7 +6,7 @@ import { LoggerService } from "../services/logger.service";
 
 export const patientsController = Router();
 
-console.log("OK")
+LoggerService.info("OK")
 
 const patients: PatientDTO[] =[
     { id: 1, firstName: "John", lastName: "Lecarre",birthDate: new Date("1964-05-11"), niss: "640511-123-45",
@@ -24,19 +24,19 @@ const patients: PatientDTO[] =[
   refDoctor:2}
   ];
 
-patientsController.get("/", (req: Request, res: Response) => {
-  console.log("[GET] /patients/");
-  const patientsDTO : PatientDTO[] = patients;
-  res.status(200).json(patientsDTO);
-});
+// patientsController.get("/", (req: Request, res: Response) => {
+//   console.log("[GET] /patients/");
+//   const patientsDTO : PatientDTO[] = patients;
+//   res.status(200).json(patientsDTO);
+// });
 
 patientsController.get("/:id", (req: Request, res: Response) => {
-  console.log("[GET] /short/:id");
+    LoggerService.info(`GET /patients/:id - id: ${req.params.id}`);
 
-  const id = parseInt(req.params.id);
+  const id = Number(req.params.id);
 
   if (!isNumber(id)){
-    console.log('invalid id');
+    LoggerService.error(`Invalid ID: ${id}`);
     res.status(400).send('ID must be a number');
     return;
   }
@@ -53,12 +53,12 @@ patientsController.get("/:id", (req: Request, res: Response) => {
 });
 
 patientsController.get("/niss/:niss", (req: Request, res: Response) => {
-  console.log("[GET] /patients/:niss");
+  LoggerService.info("[GET] /patients/:niss");
 
   const niss = req.params.niss;
 
   if (!isNiss(niss)){
-    console.log('invalid niss');
+    LoggerService.info('invalid niss');
     res.status(400).send("NISS invalide ");
     return;
   }
@@ -75,12 +75,12 @@ patientsController.get("/niss/:niss", (req: Request, res: Response) => {
 });
 
 patientsController.get("/:id/short", (req: Request, res: Response) => {
-  console.log("[GET] /patient/:id/short");
+  LoggerService.info("[GET] /patient/:id/short");
 
   const id = parseInt(req.params.id);
 
   if (!isNumber(id)){
-    console.log('invalid id');
+    LoggerService.error('invalid id');
     res.status(400).send('ID must be a number');
     return;
   }
@@ -97,12 +97,12 @@ patientsController.get("/:id/short", (req: Request, res: Response) => {
 });
 
 patientsController.get("/zipcode/:zipcode", (req: Request, res: Response) => {
-  console.log("[GET] /patients/zipcode/:zipcode");
+  LoggerService.info("[GET] /patients/zipcode/:zipcode");
 
   const zipcode = req.params.zipcode;
 
   if (!isString(zipcode)) {
-    console.log('invalid zipcode format');
+    LoggerService.error('invalid zipcode format');
     res.status(400).send('Zipcode must be a string');
     return;
   }
@@ -123,14 +123,14 @@ patientsController.get("/zipcode/:zipcode", (req: Request, res: Response) => {
 });
 
 patientsController.get("/doctor/:id/zipcode/:zipcode", (req: Request, res: Response) => {
-  console.log("[GET] /patients/doctor/:id/zipcode/:zipcode");
+  LoggerService.info("[GET] /patients/doctor/:id/zipcode/:zipcode");
 
   const id = parseInt(req.params.id);
   const zipcode = req.params.zipcode;
 
   
   if (!isNumber(id) || !isString(zipcode)) {
-    console.log("invalid parameters");
+    LoggerService.error("Invalid parameters");
     res.status(400).send("Invalid format");
     return;
   }
@@ -183,6 +183,7 @@ patientsController.post("/", (req: Request, res: Response) => {
   const newPatientDTO: NewPatientDTO = req.body;
 
   if (!newPatientDTO.firstName || !newPatientDTO.lastName || !newPatientDTO.birthDate) {
+    LoggerService.error("POST /patients - Invalid new patient data");
     res.status(400).send("Invalid patient data");
     return;
   }
@@ -212,16 +213,18 @@ patientsController.post("/", (req: Request, res: Response) => {
 });
 
 patientsController.put("/:id", (req: Request, res: Response) => {
-  const id = parseInt(req.params.id);
+  const id = Number(req.params.id);
   const updatedPatientDTO: PatientDTO = req.body;
 
   if (!isNumber(id)) {
+    LoggerService.error("PUT /patients/:id - Invalid ID parameter");
     res.status(400).send("ID parameter must be a number");
     return;
   }
 
   if (id !== updatedPatientDTO.id) {
-    res.status(400).send("Body ID does not match Parameter ID");
+    LoggerService.error("PUT /patients/:id - Invalid body");
+    res.status(400).send("Invalid patient data");
     return;
   }
 
@@ -234,6 +237,7 @@ patientsController.put("/:id", (req: Request, res: Response) => {
   }
 
   if (index === -1) {
+    LoggerService.error(`PUT /patients/:id - Patient with ID ${id} not found`);
     res.status(404).send("Patient not found");
     return;
   }

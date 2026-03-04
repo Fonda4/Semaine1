@@ -24,6 +24,15 @@ export interface NewDoctor {
   lastName: string;
   speciality: string;
 }
+
 export interface DoctorFilter {
   speciality?: string;
+}
+
+export interface DoctorDBO{
+  id : number;
+  first_name : string;
+  last_name : string;
+  speciality : string;
+
 }

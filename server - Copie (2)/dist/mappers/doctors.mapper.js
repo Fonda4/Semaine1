@@ -10,6 +10,14 @@ class DoctorsMapper {
             speciality: doctor.speciality
         };
     }
+    static toDBO(doctor) {
+        return {
+            id: doctor.id,
+            first_name: doctor.firstName,
+            last_name: doctor.lastName,
+            speciality: doctor.speciality
+        };
+    }
     static fromNewDTO(dto) {
         return {
             id: dto.id,
@@ -24,6 +32,14 @@ class DoctorsMapper {
             firstName: dto.firstName,
             lastName: dto.lastName,
             speciality: dto.speciality
+        };
+    }
+    static fromDBO(dbo) {
+        return {
+            id: dbo.id,
+            firstName: dbo.first_name,
+            lastName: dbo.last_name,
+            speciality: dbo.speciality
         };
     }
 }

@@ -7,6 +7,7 @@ import { DoctorDTO, NewDoctorDTO , Doctor, NewDoctor, DoctorFilter} from "../mod
 import { isNumber, isString, isNewDoctor, isDoctor } from "../utils/guards";
 import { DoctorsMapper } from "../mappers/doctors.mapper";
 import { LoggerService } from "../services/logger.service"; 
+import { DoctorsService } from "../services/doctors.service";
 
 export const doctorsController = Router();
 
@@ -22,33 +23,24 @@ const doctors: DoctorDTO[] = [
  * GET /doctors/
  */
 doctorsController.get("/", (req: Request, res: Response) => {
-  LoggerService.info(`GET /doctors/ - speciality: ${req.query.speciality }`);
+  LoggerService.info(`GET /doctors/ - speciality: ${req.query.speciality}`);
 
   const specialityValue = req.query.speciality;
   const filter: DoctorFilter = {};
 
-  if (isString(specialityValue)) {
-    filter.speciality = specialityValue;
-    LoggerService.error(`GET /doctors/ ${req.query.speciality}`)
-    res.status(400).json("invalid value");
-  }
-
-  let filteredDoctors = doctors;
-
-  if (filter.speciality) {
-    let temp: Doctor[] = [];
-    for (let i = 0; i < doctors.length; i++) {
-      if (doctors[i].speciality === filter.speciality) {
-        temp[temp.length] = doctors[i];
-      }
+  if (specialityValue !== undefined) {
+    if (isString(specialityValue)) {
+      filter.speciality = specialityValue;
+    } else {
+      LoggerService.error(`GET /doctors/ - paramètre speciality invalide`);
+      res.status(400).json("invalid value");
+      return;
     }
-    filteredDoctors = temp;
   }
 
-  let doctorsDTO: DoctorDTO[] = [];
-  for (let i = 0; i < filteredDoctors.length; i++) {
-      doctorsDTO[i] = DoctorsMapper.toDTO(filteredDoctors[i]);
-  }
+  const doctors: Doctor[] = DoctorsService.getAll(filter);
+
+  const doctorsDTO: DoctorDTO[] = doctors.map(doctor => DoctorsMapper.toDTO(doctor));
 
   res.status(200).json(doctorsDTO);
 });

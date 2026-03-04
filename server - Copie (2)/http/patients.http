@@ -13,7 +13,7 @@ GET http://localhost:3000/patients/1/short HTTP/1.1
 GET http://localhost:3000/patients/zipcode/1000 HTTP/1.1
 
 ###
-GET http://localhost:3000/patients?zipCode=1000 HTTP/1.1
+GET http://localhost:3000/patients?zipCode=9400 HTTP/1.1
 
 ### 
 POST http://localhost:3000/patients HTTP/1.1

@@ -1,0 +1,26 @@
+[
+{
+"id": 1,
+"first_name": "john",
+"last_name": "doe",
+"speciality": "cardiologist"
+},
+{
+"id":2,
+"first_name": "Jules",
+"last_name": "Valles",
+"speciality": "Cardiologue"
+}, 
+{
+"id":3,
+"first_name": "Safouane",
+"last_name": "Van Brussels",
+"speciality": "General Practicien"
+},
+{
+"id":4,
+"first_name": "Paola",
+"last_name": "Sanchez",
+"speciality": "pulmonologiste"
+}
+]

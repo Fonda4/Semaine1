@@ -137,7 +137,15 @@ exports.patientsController.post("/", (req, res) => {
         return;
     }
     const newPatient = patients_mapper_1.PatientsMapper.fromNewDTO(newPatientDTO);
-    const patientToCreate = newPatient;
+    const patientToCreate = {
+        id: patients.length + 1,
+        firstName: newPatient.firstName,
+        lastName: newPatient.lastName,
+        birthDate: newPatient.birthDate,
+        niss: newPatient.niss,
+        address: newPatient.address,
+        refDoctor: newPatient.refDoctor
+    };
     const createdPatient = patients_service_1.PatientsService.create(patientToCreate);
     if (createdPatient) {
         res.status(200).json(patients_mapper_1.PatientsMapper.toDTO(createdPatient));

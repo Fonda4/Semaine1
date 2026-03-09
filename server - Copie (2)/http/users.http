@@ -1,0 +1,12 @@
+### Création du premier utilisateur (Admin)
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin",
+  "role": "admin",
+  "email": "admin@tonapp.com",
+  "lastName": "Admin",
+  "firstName": "Super"
+}

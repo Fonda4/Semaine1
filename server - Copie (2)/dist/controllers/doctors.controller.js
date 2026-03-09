@@ -20,19 +20,11 @@ const doctors = [
  * GET /doctors/
  */
 exports.doctorsController.get("/", (req, res) => {
-    logger_service_1.LoggerService.info(`GET /doctors/ - speciality: ${req.query.speciality}`);
-    const specialityValue = req.query.speciality;
-    const filter = {};
-    if (specialityValue !== undefined) {
-        if ((0, guards_1.isString)(specialityValue)) {
-            filter.speciality = specialityValue;
-        }
-        else {
-            logger_service_1.LoggerService.error(`GET /doctors/ - paramètre speciality invalide`);
-            res.status(400).json("invalid value");
-            return;
-        }
-    }
+    logger_service_1.LoggerService.info("[GET] /doctors/");
+    const rawSpeciality = req.query.speciality;
+    const filter = {
+        speciality: typeof rawSpeciality === 'string' ? rawSpeciality : undefined
+    };
     const doctors = doctors_service_1.DoctorsService.getAll(filter);
     const doctorsDTO = doctors.map(doctor => doctors_mapper_1.DoctorsMapper.toDTO(doctor));
     res.status(200).json(doctorsDTO);

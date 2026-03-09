@@ -1,5 +1,6 @@
 import { Address } from "./address.model";
 import { Person } from "./person.model";
+import { AddressDBO } from "./address.model";
 
 export interface Patient extends Person {
   birthDate: Date;
@@ -44,4 +45,14 @@ export interface NewPatient {
 
 export interface PatientFilter {
   zipCode? : string;
+}
+
+export interface PatientDBO {
+  id: number;
+  first_name: string;
+  last_name: string;
+  birthdate: string;
+  niss: string; 
+  ref_doctor: number; 
+  address: AddressDBO; 
 }

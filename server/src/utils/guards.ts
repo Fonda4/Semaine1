@@ -4,7 +4,8 @@ import { Address, AddressDTO } from "../models/address.model";
 import { DoctorDTO } from "../models/doctor.model";
 import { NewDoctorDTO } from "../models/doctor.model";
 import { NewPatientDTO, PatientDTO } from "../models/patient.model";
-// import { NewUserDTO } from "../models/user.model";
+import { NewUserDTO,EROLES  } from "../models/user.model";
+
 
 /**
  * Function that validates that an input is a number
@@ -134,19 +135,23 @@ export function isDate(data: unknown): data is Date{
   return data != null && data != undefined && (typeof data === 'object') && (data instanceof Date);
 }
 
-// export function isNewUser(data: unknown): data is NewUserDTO {
-//   return data != null && data != undefined && typeof data === 'object' &&
-//     (data as NewUserDTO).lastName in data && (data as NewUserDTO).firstName in data &&
-//     (data as NewUserDTO).email in data && (data as NewUserDTO).password in data &&
-//     (data as NewUserDTO).role in data && (data as NewUserDTO).username in data &&
-//     isString((data as NewUserDTO).password) &&
-//     (data as NewUserDTO).email === 'string' &&
-//     (data as NewUserDTO).firstName === 'string' &&
-//     (data as NewUserDTO).lastName === 'string' &&
-//     (data as NewUserDTO).password === 'string' &&
-//     isNumber((data as NewUserDTO).role) &&
-//     (data as NewUserDTO).username === 'string';
-// }
+// Si tu veux vérifier strictement que le rôle fait partie de EROLES, 
+// n'oublie pas d'importer EROLES tout en haut de guards.ts :
+// import { NewUserDTO, EROLES } from "../models/user.model";
+
+export function isNewUser(data: unknown): data is NewUserDTO {
+  return (
+    data !== null &&
+    data !== undefined &&
+    typeof data === 'object' &&
+    'username' in data && typeof (data as NewUserDTO).username === 'string' &&
+    'password' in data && typeof (data as NewUserDTO).password === 'string' &&
+    'email' in data && typeof (data as NewUserDTO).email === 'string' &&
+    'lastName' in data && typeof (data as NewUserDTO).lastName === 'string' &&
+    'firstName' in data && typeof (data as NewUserDTO).firstName === 'string' &&
+    'role' in data && typeof (data as NewUserDTO).role === 'string' // Ici le rôle passe car "admin" est un string
+  );
+}
 
 // export function isAppointment(data: unknown): data is AppointmentDTO {
 //   return data != undefined && typeof data === 'object' &&

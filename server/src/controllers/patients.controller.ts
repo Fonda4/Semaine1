@@ -1,4 +1,5 @@
-import { Patient, NewPatient, PatientDTO, PatientShortDTO, NewPatientDTO, PatientFilter } from "../models/patient.model";import { PatientsMapper, } from "../mappers/patients.mapper";
+import { Patient, NewPatient, PatientDTO, PatientShortDTO, NewPatientDTO, PatientFilter } from "../models/patient.model";
+import { PatientsMapper, } from "../mappers/patients.mapper";
 import { Request, Response, Router } from "express";
 import { isNiss, isNumber,isString } from "../utils/guards";
 import { LoggerService } from "../services/logger.service";
@@ -173,8 +174,18 @@ patientsController.post("/", (req: Request, res: Response) => {
     return;
   }
 
-  const newPatient = PatientsMapper.fromNewDTO(newPatientDTO);
-  const patientToCreate = newPatient as Patient; 
+const newPatient = PatientsMapper.fromNewDTO(newPatientDTO);
+  
+  const patientToCreate: Patient = {
+    id: patients.length + 1,
+    firstName: newPatient.firstName,
+    lastName: newPatient.lastName,
+    birthDate: newPatient.birthDate,
+    niss: newPatient.niss,
+    address: newPatient.address,
+    refDoctor: newPatient.refDoctor
+  };
+
   const createdPatient = PatientsService.create(patientToCreate);
 
   if (createdPatient) {

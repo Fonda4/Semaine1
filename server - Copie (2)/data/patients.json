@@ -1,0 +1,78 @@
+[
+  {
+    "id": 1,
+    "first_name": "Averoes",
+    "last_name": "Ibn Rochd",
+    "birthdate": "1926-05-21",
+    "niss": "260511-123-45",
+    "ref_doctor": 1,
+    "address": {
+      "number": "2",
+      "street": "rue de la poesie",
+      "city": "Uccle",
+      "country": "Belgique",
+      "zip_code": "1200"
+    }
+  },
+  {
+    "id": 2,
+    "first_name": "John",
+    "last_name": "Lecarre",
+    "birthdate": "1964-05-11",
+    "niss": "640511-123-45",
+    "ref_doctor": 1,
+    "address": {
+      "street": "Rue du polar",
+      "number": "273-B",
+      "zip_code": "1000",
+      "city": "Bruxelles",
+      "country": "Belgique"
+    }
+  },
+  {
+    "id": 3,
+    "first_name": "Gabrielle",
+    "last_name": "Garcias Marques",
+    "birthdate": "1978-12-03",
+    "niss": "781203-123-45",
+    "ref_doctor": 2,
+    "address": {
+      "street": "Rue du merveilleux",
+      "number": "57",
+      "zip_code": "1000",
+      "city": "Bruxelles",
+      "country": "Belgique"
+    }
+  },
+  {
+    "id": 4,
+    "first_name": "Tintin",
+    "last_name": "Reporter",
+    "birthdate": "1929-01-10",
+    "niss": "290110-999-88",
+    "ref_doctor": 1,
+    "address": {
+      "street": "Château de Moulinsart",
+      "number": "1",
+      "zip_code": "5000",
+      "city": "Namur",
+      "country": "Belgique"
+    }
+  },
+  {
+    "id": 5,
+    "first_name": "Kamel",
+    "last_name": "Kebir",
+    "birthdate": "1995-03-03",
+    "niss": "950303-975-31",
+    "ref_doctor": 2,
+    "address": {
+      "street": "Karmine Corp",
+      "number": "67",
+      "zip_code": "9400",
+      "city": "Aubervilliers",
+      "country": "France"
+    }
+  }
+
+]

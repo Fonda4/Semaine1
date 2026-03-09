@@ -5,6 +5,7 @@ const patients_mapper_1 = require("../mappers/patients.mapper");
 const express_1 = require("express");
 const guards_1 = require("../utils/guards");
 const logger_service_1 = require("../services/logger.service");
+const patients_service_1 = require("../services/patients.service");
 exports.patientsController = (0, express_1.Router)();
 logger_service_1.LoggerService.debug("OK Patients");
 const patients = [
@@ -28,21 +29,20 @@ const patients = [
 //   res.status(200).json(patientsDTO);
 // });
 exports.patientsController.get("/:id", (req, res) => {
-    logger_service_1.LoggerService.info("[GET] /short/:id");
+    logger_service_1.LoggerService.info("[GET] /patients/:id");
     const id = Number(req.params.id);
     if (!(0, guards_1.isNumber)(id)) {
         logger_service_1.LoggerService.error('invalid id');
         res.status(400).send('ID must be a number');
         return;
     }
-    for (let i = 0; i < patients.length; i++) {
-        if (patients[i].id == id) {
-            const PatientDTO = patients_mapper_1.PatientsMapper.toShortDTO(patients[i]);
-            res.status(200).json(PatientDTO);
-            return;
-        }
+    const patient = patients_service_1.PatientsService.getById(id);
+    if (patient) {
+        res.status(200).json(patients_mapper_1.PatientsMapper.toShortDTO(patient));
     }
-    res.status(404).send('Patient not found');
+    else {
+        res.status(404).send('Patient not found');
+    }
 });
 exports.patientsController.get("/niss/:niss", (req, res) => {
     logger_service_1.LoggerService.info("[GET] /patients/:niss");
@@ -125,37 +125,20 @@ exports.patientsController.get("/", (req, res) => {
     const filter = {
         zipCode: typeof rawZipCode === 'string' ? rawZipCode : undefined
     };
-    let results = [];
-    if (filter.zipCode) {
-        logger_service_1.LoggerService.info(`Filtrage des patients par code postal : ${filter.zipCode}`);
-        for (let i = 0; i < patients.length; i++) {
-            if (patients[i].address.zipCode === filter.zipCode) {
-                results.push(patients_mapper_1.PatientsMapper.toDTO(patients[i]));
-            }
-        }
-    }
-    else {
-        logger_service_1.LoggerService.info("Aucun filtre fourni, renvoi de la liste complète des patients.");
-        results = patients;
-    }
+    const patients = patients_service_1.PatientsService.getAll(filter);
+    const results = patients.map(patient => patients_mapper_1.PatientsMapper.toDTO(patient));
     res.status(200).json(results);
 });
 exports.patientsController.post("/", (req, res) => {
+    logger_service_1.LoggerService.info("[POST] /patients/");
     const newPatientDTO = req.body;
     if (!newPatientDTO.firstName || !newPatientDTO.lastName || !newPatientDTO.birthDate) {
         res.status(400).send("Invalid patient data");
         return;
     }
     const newPatient = patients_mapper_1.PatientsMapper.fromNewDTO(newPatientDTO);
-    let newId = 0;
-    for (let i = 0; i < patients.length; i++) {
-        if (patients[i].id > newId) {
-            newId = patients[i].id;
-        }
-    }
-    newId++;
-    const patient = {
-        id: newId,
+    const patientToCreate = {
+        id: patients.length + 1,
         firstName: newPatient.firstName,
         lastName: newPatient.lastName,
         birthDate: newPatient.birthDate,
@@ -163,8 +146,13 @@ exports.patientsController.post("/", (req, res) => {
         address: newPatient.address,
         refDoctor: newPatient.refDoctor
     };
-    patients[patients.length] = patient;
-    res.status(201).json(patients_mapper_1.PatientsMapper.toDTO(patient));
+    const createdPatient = patients_service_1.PatientsService.create(patientToCreate);
+    if (createdPatient) {
+        res.status(200).json(patients_mapper_1.PatientsMapper.toDTO(createdPatient));
+    }
+    else {
+        res.status(400).send("Unprocessable entity : NISS already exists or Doctor not found");
+    }
 });
 exports.patientsController.put("/:id", (req, res) => {
     const id = Number(req.params.id);

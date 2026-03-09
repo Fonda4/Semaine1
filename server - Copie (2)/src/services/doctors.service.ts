@@ -45,6 +45,25 @@ export class DoctorsService {
     }
   }
 
+public static create(doctor: Doctor): Doctor | undefined {
+    try {
+      const doctorsDBO: DoctorDBO[] = FilesService.readFile<DoctorDBO>('data/doctors.json');
+      
+      const maxId = doctorsDBO.reduce((max, currentDbo) => (currentDbo.id > max ? currentDbo.id : max), 0);
+      
+      doctor.id = maxId + 1;
+
+      doctorsDBO.push(DoctorsMapper.toDBO(doctor));
+      
+      FilesService.writeFile('data/doctors.json', doctorsDBO);
+      
+      return doctor;
+    } catch (error) {
+      LoggerService.error(error);
+      return undefined;
+    }
+  }
+
   public static update(id: number, doctor: Doctor): Doctor | undefined {
     try {
       const doctorsDBO: DoctorDBO[] = FilesService.readFile<DoctorDBO>('data/doctors.json');

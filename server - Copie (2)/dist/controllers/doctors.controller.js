@@ -9,6 +9,7 @@ const guards_1 = require("../utils/guards");
 const doctors_mapper_1 = require("../mappers/doctors.mapper");
 const logger_service_1 = require("../services/logger.service");
 const doctors_service_1 = require("../services/doctors.service");
+const auth_service_1 = require("../services/auth.service");
 exports.doctorsController = (0, express_1.Router)();
 logger_service_1.LoggerService.debug("OK Doctors");
 const doctors = [
@@ -95,7 +96,7 @@ exports.doctorsController.put("/:id", (req, res) => {
     logger_service_1.LoggerService.info(`PUT /doctors/${req.params.id} `);
     res.status(200).send(doctors_mapper_1.DoctorsMapper.toDTO(updatedDoctor));
 });
-exports.doctorsController.delete("/:id", (req, res) => {
+exports.doctorsController.delete("/:id", auth_service_1.AuthService.authorize, (req, res) => {
     logger_service_1.LoggerService.info(`DELETE /doctors/${req.params.id}`);
     const id = Number(req.params.id);
     let index = -1;

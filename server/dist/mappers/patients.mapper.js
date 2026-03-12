@@ -24,7 +24,7 @@ class PatientsMapper {
         return {
             firstName: dto.firstName,
             lastName: dto.lastName,
-            birthDate: new Date(dto.birthDate),
+            birthDate: dto.birthDate,
             niss: dto.niss,
             address: dto.address,
             refDoctor: dto.refDoctor
@@ -35,7 +35,7 @@ class PatientsMapper {
             id: dto.id,
             firstName: dto.firstName,
             lastName: dto.lastName,
-            birthDate: new Date(dto.birthDate),
+            birthDate: dto.birthDate,
             niss: dto.niss,
             address: dto.address,
             refDoctor: dto.refDoctor
@@ -46,7 +46,7 @@ class PatientsMapper {
             id: patient.id,
             first_name: patient.firstName,
             last_name: patient.lastName,
-            birthdate: patient.birthDate.toISOString(),
+            birth_date: patient.birthDate,
             niss: patient.niss,
             ref_doctor: patient.refDoctor,
             address: {
@@ -63,7 +63,7 @@ class PatientsMapper {
             id: dbo.id,
             firstName: dbo.first_name,
             lastName: dbo.last_name,
-            birthDate: new Date(dbo.birthdate),
+            birthDate: dbo.birth_date,
             niss: dbo.niss,
             refDoctor: dbo.ref_doctor,
             address: {

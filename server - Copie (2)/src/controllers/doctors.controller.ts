@@ -8,6 +8,7 @@ import { isNumber, isString, isNewDoctor, isDoctor } from "../utils/guards";
 import { DoctorsMapper } from "../mappers/doctors.mapper";
 import { LoggerService } from "../services/logger.service"; 
 import { DoctorsService } from "../services/doctors.service";
+import { AuthService } from "../services/auth.service"; 
 
 export const doctorsController = Router();
 
@@ -128,7 +129,7 @@ doctorsController.put("/:id", (req: Request, res : Response) => {
 });
 
 
-doctorsController.delete("/:id", (req: Request, res : Response) => {
+doctorsController.delete("/:id", AuthService.authorize, (req: Request, res : Response) => {
   LoggerService.info(`DELETE /doctors/${req.params.id}`);
 
   const id  = Number(req.params.id);

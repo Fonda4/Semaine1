@@ -1,27 +1,11 @@
+import { BasicModel, BasicModelDBO, BasicModelDTO } from "./basic.model";
+
 export enum EROLES {
-  USER = "user",
-  ADMIN = "admin"
+  ADMIN = 'admin',
+  USER = 'user'
 }
 
-export interface UserDBO {
-  username: string;
-  password: string;
-  role: EROLES;
-  email: string;
-  last_name: string;
-  first_name: string;
-}
-
-export interface User {
-  username: string;
-  password: string;
-  role: EROLES;
-  email: string;
-  lastName: string;
-  firstName: string;
-}
-
-export interface UserDTO {
+export interface User extends BasicModel {
   username: string;
   password?: string;
   role: EROLES;
@@ -30,9 +14,26 @@ export interface UserDTO {
   firstName: string;
 }
 
+export interface UserDBO extends BasicModelDBO {
+  username: string;
+  password?: string;
+  role: EROLES;
+  email: string;
+  last_name: string;
+  first_name: string;
+}
+
+export interface UserDTO extends BasicModelDTO {
+  username: string;
+  role: EROLES;
+  email: string;
+  lastName: string;
+  firstName: string;
+}
+
 export interface NewUser {
   username: string;
-  password: string;
+  password?: string;
   role: EROLES;
   email: string;
   lastName: string;
@@ -41,14 +42,9 @@ export interface NewUser {
 
 export interface NewUserDTO {
   username: string;
-  password: string;
+  password?: string;
   role: EROLES;
   email: string;
   lastName: string;
   firstName: string;
-}
-
-export interface AuthenticatedUser {
-  username: string;
-  token: string;
 }

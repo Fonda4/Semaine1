@@ -1,31 +1,25 @@
-import { Address } from "./address.model";
-import { Person } from "./person.model";
-import { AddressDBO } from "./address.model";
+import { Address, AddressDBO } from "./address.model";
+import { BasicModel, BasicModelDBO, BasicModelDTO } from "./basic.model";
 
-export interface Patient extends Person {
-  birthDate: Date;
+export interface Patient extends BasicModel {
+  firstName: string;
+  lastName: string;
+  birthDate: string;
   niss: string;
   address: Address;
   refDoctor: number;
 }
 
-export interface PatientDTO {
-  id: number;
-  firstName: string;
-  lastName: string;
-  birthDate: Date;
+export interface PatientDBO extends BasicModelDBO {
+  first_name: string;
+  last_name: string;
+  birth_date: string;
   niss: string;
-  address: Address;
-  refDoctor: number;
+  address: AddressDBO;
+  ref_doctor: number;
 }
 
-export interface PatientShortDTO {
-  id: number;
-  firstName: string;
-  lastName: string;
-}
-
-export interface NewPatientDTO {
+export interface PatientDTO extends BasicModelDTO {
   firstName: string;
   lastName: string;
   birthDate: string;
@@ -37,22 +31,32 @@ export interface NewPatientDTO {
 export interface NewPatient {
   firstName: string;
   lastName: string;
-  birthDate: Date;
+  birthDate: string;
   niss: string;
   address: Address;
   refDoctor: number;
 }
 
-export interface PatientFilter {
-  zipCode? : string;
+export interface NewPatientDTO {
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  niss: string;
+  address: Address;
+  refDoctor: number;
 }
 
-export interface PatientDBO {
+export interface ShortPatientDTO {
   id: number;
-  first_name: string;
-  last_name: string;
-  birthdate: string;
-  niss: string; 
-  ref_doctor: number; 
-  address: AddressDBO; 
+  firstName: string;
+  lastName: string;
+}
+
+export interface PatientFilter {
+  zipCode?: string;
+}
+export interface ShortPatientDTO {
+  id: number;
+  firstName: string;
+  lastName: string;
 }

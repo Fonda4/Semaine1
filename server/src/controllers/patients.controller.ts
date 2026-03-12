@@ -1,16 +1,19 @@
 import { Request, Response, Router } from "express";
-import { Patient, NewPatient, PatientDTO, PatientShortDTO, NewPatientDTO, PatientFilter } from "../models/patient.model";
+import { Patient, NewPatient, PatientDTO, ShortPatientDTO, NewPatientDTO, PatientFilter } from "../models/patient.model";
 import { PatientsMapper } from "../mappers/patients.mapper";
 import { isNiss, isNumber, isString, isNewPatient, isPatient } from "../utils/guards";
 import { LoggerService } from "../services/logger.service";
 import { PatientsService } from "../services/patients.service";
+import { AuthService } from "../services/auth.service";
 
 export const patientsController = Router();
+LoggerService.debug("OK Patients");
+
 
 /**
  * GET /patients/
  */
-patientsController.get("/", (req: Request, res: Response) => {
+patientsController.get("/", AuthService.authorize, (req: Request, res: Response) => {
   LoggerService.info("[GET] /patients/");
 
   const rawZipCode = req.query.zipCode;
@@ -27,7 +30,7 @@ patientsController.get("/", (req: Request, res: Response) => {
 /**
  * GET /patients/:id
  */
-patientsController.get("/:id", (req: Request, res: Response) => {
+patientsController.get("/:id", AuthService.authorize, (req: Request, res: Response) => {
   LoggerService.info(`[GET] /patients/${req.params.id}`);
   const id = Number(req.params.id);
 
@@ -49,7 +52,7 @@ patientsController.get("/:id", (req: Request, res: Response) => {
 /**
  * GET /patients/:id/short
  */
-patientsController.get("/:id/short", (req: Request, res: Response) => {
+patientsController.get("/:id/short", AuthService.authorize, (req: Request, res: Response) => {
   LoggerService.info(`[GET] /patients/${req.params.id}/short`);
   const id = Number(req.params.id);
 
@@ -71,7 +74,7 @@ patientsController.get("/:id/short", (req: Request, res: Response) => {
 /**
  * GET/Patient/niss/:niss
  */
-patientsController.get("/niss/:niss", (req: Request, res: Response) => {
+patientsController.get("/niss/:niss", AuthService.authorize, (req: Request, res: Response) => {
   LoggerService.info("[GET] /patients/niss/:niss");
   const niss = req.params.niss;
 
@@ -93,7 +96,7 @@ patientsController.get("/niss/:niss", (req: Request, res: Response) => {
  * GET/patient/:id
  */
 
-patientsController.get("/:id/short", (req: Request, res: Response) => {
+patientsController.get("/:id/short", AuthService.authorize, (req: Request, res: Response) => {
   LoggerService.info("[GET] /patients/:id/short");
   const id = Number(req.params.id);
 
@@ -114,7 +117,7 @@ patientsController.get("/:id/short", (req: Request, res: Response) => {
 /**
  * GET/patient/:id/zipcode
  */
-patientsController.get("/zipcode/:zipcode", (req: Request, res: Response) => {
+patientsController.get("/zipcode/:zipcode", AuthService.authorize, (req: Request, res: Response) => {
   LoggerService.info("[GET] /patients/zipcode/:zipcode");
   const zipcode = req.params.zipcode;
 
@@ -137,7 +140,7 @@ patientsController.get("/zipcode/:zipcode", (req: Request, res: Response) => {
 /**
  * GET/doctor/:id/zipcode/:zipcode
  */
-patientsController.get("/doctor/:id/zipcode/:zipcode", (req: Request, res: Response) => {
+patientsController.get("/doctor/:id/zipcode/:zipcode", AuthService.authorize, (req: Request, res: Response) => {
   LoggerService.info("[GET] /patients/doctor/:id/zipcode/:zipcode");
   const id = Number(req.params.id);
   const zipcode = req.params.zipcode;
@@ -163,7 +166,7 @@ patientsController.get("/doctor/:id/zipcode/:zipcode", (req: Request, res: Respo
 /**
  * POST /patients
  */
-patientsController.post("/", (req: Request, res: Response) => {
+patientsController.post("/", AuthService.authorize, (req: Request, res: Response) => {
   LoggerService.info("[POST] /patients/");
   const newPatientDTO: NewPatientDTO = req.body;
 
@@ -196,7 +199,7 @@ patientsController.post("/", (req: Request, res: Response) => {
 /**
  * PUT /patients/:id
  */
-patientsController.put("/:id", (req: Request, res: Response) => {
+patientsController.put("/:id", AuthService.authorize, (req: Request, res: Response) => {
   LoggerService.info(`[PUT] /patients/${req.params.id}`);
   const id = Number(req.params.id);
   const updatedPatientDTO: PatientDTO = req.body;
@@ -226,7 +229,7 @@ patientsController.put("/:id", (req: Request, res: Response) => {
 /**
  * DELETE /patients/:id
  */
-patientsController.delete("/:id", (req: Request, res: Response) => {
+patientsController.delete("/:id", AuthService.authorize, (req: Request, res: Response) => {
   LoggerService.info(`[DELETE] /patients/${req.params.id}`);
   const id = Number(req.params.id);
 

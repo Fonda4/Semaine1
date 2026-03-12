@@ -5,7 +5,8 @@ import {Response, Request} from 'express';
 import {doctorsController} from './controllers/doctors.controller';
 import { patientsController } from "./controllers/patients.controller";
 import { userInfo } from "os";
-import { usersController } from "./controllers/users.controllers";
+import { authController } from './controllers/auth.controller';
+import { usersController } from "./controllers/users.controller";
 
 // creates an express app
 export const app = express();
@@ -21,5 +22,5 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/doctors', doctorsController);
 app.use('/patients', patientsController);
 app.use('/users', usersController)
-app.use('/auth', usersController)
+app.use('/auth', authController);
 

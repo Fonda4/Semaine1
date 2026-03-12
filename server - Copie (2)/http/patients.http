@@ -1,58 +1,72 @@
+### 1. Connexion Administrateur (Génère le token)
+# @name admin_login
+POST http://localhost:3000/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+###
+### Récupérer tous les patients
 GET http://localhost:3000/patients HTTP/1.1
+Authorization: {{admin_login.response.body.token}}
 
 ###
+### Récupérer un patient par ID
 GET http://localhost:3000/patients/1 HTTP/1.1
+Authorization: {{admin_login.response.body.token}}
 
 ###
-GET http://localhost:3000/patients/niss/640511-123-45 HTTP/1.1
-
-###
+### Récupérer la version courte d'un patient
 GET http://localhost:3000/patients/1/short HTTP/1.1
+Authorization: {{admin_login.response.body.token}}
 
 ###
-GET http://localhost:3000/patients/zipcode/1000 HTTP/1.1
-
-###
-GET http://localhost:3000/patients?zipCode=9400 HTTP/1.1
-
-### 
+### Créer un nouveau patient
 POST http://localhost:3000/patients HTTP/1.1
 Content-Type: application/json
+Authorization: {{admin_login.response.body.token}}
 
 {
-    "firstName": "Hercule",
-    "lastName": "Poirot",
-    "birthDate": "1900-10-10",
-    "niss": "001010-123-45",
-    "address": {
-        "street": "Rue de l'Enquête",
-        "number": "56",
-        "zipCode": "1000",
-        "city": "Bruxelles",
-        "country": "Belgique"
-    },
-    "refDoctor": 1
+  "firstName": "Jean",
+  "lastName": "Dupont",
+  "birthDate": "1990-01-01",
+  "niss": "900101-123-45",
+  "address": {
+    "street": "Rue de la Paix",
+    "number": "10",
+    "zipCode": "1000",
+    "city": "Bruxelles",
+    "country": "Belgique"
+  },
+  "refDoctor": 1
 }
 
-### Mise à jour d'un patient (PUT)
-PUT http://localhost:3000/patients/8 HTTP/1.1
+###
+### Mettre à jour un patient
+PUT http://localhost:3000/patients/1 HTTP/1.1
 Content-Type: application/json
+Authorization: {{admin_login.response.body.token}}
 
 {
-    "id": 8,
-    "firstName": "John",
-    "lastName": "Lecarre",
-    "birthDate": "1964-05-11",
-    "niss": "640511-123-45",
-    "address": {
-        "street": "Rue du polar",
-        "number": "273-C",
-        "zipCode": "1000",
-        "city": "Bruxelles",
-        "country": "Belgique"
-    },
-    "refDoctor": 2
+  "id": 1,
+  "firstName": "Jean",
+  "lastName": "Dupont",
+  "birthDate": "1990-01-01",
+  "niss": "900101-123-45",
+  "address": {
+    "street": "Rue de la Paix",
+    "number": "10",
+    "zipCode": "1000",
+    "city": "Bruxelles",
+    "country": "Belgique"
+  },
+  "refDoctor": 2
 }
 
-### Suppression d'un patient (DELETE)
-DELETE http://localhost:3000/patients/7 HTTP/1.1
+###
+### Supprimer un patient
+DELETE http://localhost:3000/patients/1 HTTP/1.1
+Authorization: {{admin_login.response.body.token}}

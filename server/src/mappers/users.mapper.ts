@@ -15,6 +15,7 @@ export class UsersMapper {
 
   public static toUserDTO(user: User): UserDTO {
     return {
+      id: user.id,
       username: user.username,
       role: user.role, 
       email: user.email,

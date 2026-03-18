@@ -10,6 +10,11 @@ exports.isNewPatient = isNewPatient;
 exports.isNiss = isNiss;
 exports.isDate = isDate;
 exports.isNewUser = isNewUser;
+exports.isAppointmentStatus = isAppointmentStatus;
+exports.isNewAppointment = isNewAppointment;
+exports.isAppointment = isAppointment;
+// import { MedicalExamDTO } from "../models/medical-exam.model.dto";
+const appointment_model_1 = require("../models/appointment.model");
 /**
  * Function that validates that an input is a number
  * @param data any data
@@ -137,8 +142,8 @@ function isNewUser(data) {
 // export function isAppointment(data: unknown): data is AppointmentDTO {
 //   return data != undefined && typeof data === 'object' &&
 //   ((data as AppointmentDTO).id === undefined || typeof (data as AppointmentDTO).id == 'number') &&
-//   // 'date' in data && 'doctor' in data &&
-//   // 'patient' in data && 'status' in data &&
+//   'date' in data && 'doctor' in data &&
+//   'patient' in data && 'status' in data &&
 //   (typeof (data as AppointmentDTO).dateTime === 'string' || (typeof (data as AppointmentDTO).dateTime === 'object') && isDate((data as AppointmentDTO).dateTime)) &&
 //   isNumber((data as Appointment).doctorId) &&
 //   isNumber((data as Appointment).patientId) &&
@@ -156,6 +161,27 @@ function isNewUser(data) {
 //     isNumber((data as NewAppointmentDTO).doctorId) &&
 //     isNumber((data as NewAppointmentDTO).patientId);
 // }
-// export function isAppointmentStatus(data: string): data is EAppointmentStatus {
-//   return (Object.values(EAppointmentStatus) as string[]).includes(data);
-// }
+function isAppointmentStatus(data) {
+    return Object.values(appointment_model_1.EAppointmentStatus).includes(data);
+}
+/**
+ * Function that validates that an input is a valid NewAppointment
+ */
+function isNewAppointment(data) {
+    return (data !== undefined &&
+        data !== null &&
+        typeof data === 'object' &&
+        'dateTime' in data && typeof data.dateTime === 'string' &&
+        'doctorId' in data && isNumber(data.doctorId) &&
+        'patientId' in data && isNumber(data.patientId));
+}
+/**
+ * Function that validates that an input is a valid Appointment (with ID)
+ */
+function isAppointment(data) {
+    return (data !== undefined &&
+        data !== null &&
+        typeof data === 'object' &&
+        isNewAppointment(data) &&
+        'id' in data && isNumber(data.id));
+}

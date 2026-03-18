@@ -19,7 +19,6 @@ export class DoctorsService {
       const doctorsDBO: DoctorDBO[] = FilesService.readFile<DoctorDBO>('data/doctors.json');
       let doctors: Doctor[] = doctorsDBO.map(dbo => DoctorsMapper.fromDBO(dbo));
 
-      // SOFT DELETE : On retire tous les médecins qui ont une date de suppression
       doctors = doctors.filter(doctor => !doctor.deletedAt);
 
       if (filter && filter.speciality) {
@@ -38,7 +37,6 @@ export class DoctorsService {
       const doctorsDBO: DoctorDBO[] = FilesService.readFile<DoctorDBO>('data/doctors.json');
       const index = this.findDoctorIndex(doctorsDBO, id);
       
-      // SOFT DELETE : On vérifie que le médecin existe ET qu'il n'est pas supprimé
       if (index !== -1 && !doctorsDBO[index].deleted_at) {
         return DoctorsMapper.fromDBO(doctorsDBO[index]);
       }
@@ -57,7 +55,6 @@ export class DoctorsService {
       
       doctor.id = maxId + 1;
 
-      // TRACKING : Ajout des dates de création et de mise à jour au moment de la création
       doctor.createdAt = new Date();
       doctor.updatedAt = new Date();
 
@@ -77,11 +74,9 @@ export class DoctorsService {
       const doctorsDBO: DoctorDBO[] = FilesService.readFile<DoctorDBO>('data/doctors.json');
       const index = this.findDoctorIndex(doctorsDBO, id);
 
-      // SOFT DELETE : On ne peut mettre à jour qu'un médecin qui n'est pas supprimé
       if (index !== -1 && !doctorsDBO[index].deleted_at) {
         doctor.id = id;
 
-        // TRACKING : On conserve l'ancienne date de création (si elle existait), et on actualise la date de mise à jour
         doctor.createdAt = doctorsDBO[index].created_at ? new Date(doctorsDBO[index].created_at as string) : new Date();
         doctor.updatedAt = new Date();
 

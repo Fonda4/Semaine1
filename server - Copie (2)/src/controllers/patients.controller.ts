@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { Patient, NewPatient, PatientDTO, PatientShortDTO, NewPatientDTO, PatientFilter } from "../models/patient.model";
+import { Patient, NewPatient, PatientDTO, ShortPatientDTO, NewPatientDTO, PatientFilter } from "../models/patient.model";
 import { PatientsMapper } from "../mappers/patients.mapper";
 import { isNiss, isNumber, isString, isNewPatient, isPatient } from "../utils/guards";
 import { LoggerService } from "../services/logger.service";
@@ -245,5 +245,5 @@ patientsController.delete("/:id", AuthService.authorize, (req: Request, res: Res
     return;
   }
 
-  res.status(204).send();
+  res.status(200).send();
 });

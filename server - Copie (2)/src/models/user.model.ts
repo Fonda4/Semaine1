@@ -48,3 +48,8 @@ export interface NewUserDTO {
   lastName: string;
   firstName: string;
 }
+
+export interface AuthenticatedUser {
+  username: string;
+  token: string;
+}

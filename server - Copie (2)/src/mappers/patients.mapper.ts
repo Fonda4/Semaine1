@@ -1,4 +1,4 @@
-import { Patient, PatientDTO, PatientShortDTO, NewPatient, NewPatientDTO, PatientDBO } from "../models/patient.model";
+import { Patient, PatientDTO, ShortPatientDTO, NewPatient, NewPatientDTO, PatientDBO } from "../models/patient.model";
 export class PatientsMapper {
   
   public static toDTO(patient: Patient): PatientDTO {
@@ -13,7 +13,7 @@ export class PatientsMapper {
     };
   }
 
-  public static toShortDTO(patient: Patient): PatientShortDTO {
+  public static toShortDTO(patient: Patient): ShortPatientDTO {
     return {
       id: patient.id,
       firstName: patient.firstName,
@@ -25,7 +25,7 @@ export class PatientsMapper {
     return {
       firstName: dto.firstName,
       lastName: dto.lastName,
-      birthDate: new Date(dto.birthDate),
+      birthDate: dto.birthDate,
       niss: dto.niss,
       address: dto.address,
       refDoctor: dto.refDoctor
@@ -37,19 +37,21 @@ export class PatientsMapper {
       id: dto.id,
       firstName: dto.firstName,
       lastName: dto.lastName,
-      birthDate: new Date(dto.birthDate),
+      birthDate: dto.birthDate,
       niss: dto.niss,
       address: dto.address,
       refDoctor: dto.refDoctor
     };
   }
 
+  
+
 public static toDBO(patient: Patient): PatientDBO {
     return {
       id: patient.id,
       first_name: patient.firstName,
       last_name: patient.lastName,
-      birthdate: patient.birthDate.toISOString(), 
+      birth_date: patient.birthDate,
       niss: patient.niss,
       ref_doctor: patient.refDoctor,
       address: {
@@ -68,7 +70,7 @@ public static toDBO(patient: Patient): PatientDBO {
       id: dbo.id,
       firstName: dbo.first_name,
       lastName: dbo.last_name,
-      birthDate: new Date(dbo.birthdate), 
+      birthDate: dbo.birth_date,
       niss: dbo.niss,
       refDoctor: dbo.ref_doctor,
       address: {

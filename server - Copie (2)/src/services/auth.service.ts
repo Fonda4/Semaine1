@@ -15,8 +15,7 @@ export class AuthService{
                 LoggerService.error(`erreur : l'utilisateur ${username} n'extiste pas`);
                 return undefined;
             }
-        const isPasswordValid = bcrypt.compareSync(password, user.password);
-      
+            const isPasswordValid = bcrypt.compareSync(password, user.password!);      
       if (!isPasswordValid) {
         LoggerService.error(`Connexion échouée : Mot de passe incorrect pour "${username}".`);
         return undefined;

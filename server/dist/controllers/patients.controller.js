@@ -198,5 +198,5 @@ exports.patientsController.delete("/:id", auth_service_1.AuthService.authorize, 
         res.status(404).send("Patient not found");
         return;
     }
-    res.status(204).send();
+    res.status(200).send();
 });

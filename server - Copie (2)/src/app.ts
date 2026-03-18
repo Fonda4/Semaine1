@@ -7,6 +7,7 @@ import { patientsController } from "./controllers/patients.controller";
 import { userInfo } from "os";
 import { authController } from './controllers/auth.controller';
 import { usersController } from "./controllers/users.controller";
+import appointmentsController from './controllers/appointments.controller';
 
 // creates an express app
 export const app = express();
@@ -23,4 +24,6 @@ app.use('/doctors', doctorsController);
 app.use('/patients', patientsController);
 app.use('/users', usersController)
 app.use('/auth', authController);
+app.use('/appointments', appointmentsController);
+
 

@@ -55,3 +55,8 @@ export interface ShortPatientDTO {
 export interface PatientFilter {
   zipCode?: string;
 }
+export interface ShortPatientDTO {
+  id: number;
+  firstName: string;
+  lastName: string;
+}

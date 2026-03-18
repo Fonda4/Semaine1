@@ -245,5 +245,5 @@ patientsController.delete("/:id", AuthService.authorize, (req: Request, res: Res
     return;
   }
 
-  res.status(204).send();
+  res.status(200).send();
 });

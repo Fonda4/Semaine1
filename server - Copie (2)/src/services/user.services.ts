@@ -49,7 +49,7 @@ export class UsersService {
       const maxId = usersDBO.reduce((max, currentDbo) => (currentDbo.id > max ? currentDbo.id : max), 0);
       const newId = maxId + 1;
 
-      const hashedPassword = bcrypt.hashSync(newUser.password, 10);
+      const hashedPassword = bcrypt.hashSync(newUser.password!, 10);
       
       const now = new Date();
 

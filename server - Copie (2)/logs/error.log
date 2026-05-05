@@ -1,0 +1,31 @@
+2026-03-11T07:35:36.385Z - Création échouée: Le patient avec le NISS 001010-123-45 existe déjà.
+2026-03-11T07:35:43.591Z - Création échouée: Le patient avec le NISS 001010-123-45 existe déjà.
+2026-03-11T07:35:44.808Z - Création échouée: Le patient avec le NISS 001010-123-45 existe déjà.
+2026-03-11T07:35:54.787Z - Création échouée: Le patient avec le NISS 001010-123-45 existe déjà.
+2026-03-11T07:35:55.281Z - Création échouée: Le patient avec le NISS 001010-123-45 existe déjà.
+2026-03-11T07:35:56.035Z - Création échouée: Le patient avec le NISS 001010-123-45 existe déjà.
+2026-03-12T11:45:01.100Z - Unexpected end of JSON input
+2026-03-12T11:45:01.145Z - Unexpected end of JSON input
+2026-03-12T11:45:06.695Z - Unexpected end of JSON input
+2026-03-12T11:45:06.740Z - Unexpected end of JSON input
+2026-03-12T11:45:16.532Z - Unexpected end of JSON input
+2026-03-12T11:45:16.577Z - Unexpected end of JSON input
+2026-03-12T11:45:18.082Z - Unexpected end of JSON input
+2026-03-12T11:45:18.127Z - Unexpected end of JSON input
+2026-03-12T11:45:19.031Z - Unexpected end of JSON input
+2026-03-12T11:45:19.076Z - Unexpected end of JSON input
+2026-03-12T11:45:19.236Z - Unexpected end of JSON input
+2026-03-12T11:45:19.281Z - Unexpected end of JSON input
+2026-03-12T11:45:23.217Z - Unexpected end of JSON input
+2026-03-12T11:45:23.262Z - Unexpected end of JSON input
+2026-03-12T11:45:31.558Z - Unexpected end of JSON input
+2026-03-12T11:45:31.603Z - Unexpected end of JSON input
+2026-03-12T11:47:40.596Z - Création échouée: L'utilisateur "adminaa" existe déjà.
+2026-03-12T11:47:52.726Z - Création échouée: L'utilisateur "admin" existe déjà.
+2026-03-12T11:48:29.781Z - Création échouée: L'utilisateur "admin" existe déjà.
+2026-03-12T11:48:41.190Z - Unexpected end of JSON input
+2026-03-12T11:48:41.235Z - Unexpected end of JSON input
+2026-03-12T11:50:30.144Z - Création échouée: L'utilisateur "admin" existe déjà.
+2026-03-12T11:51:29.377Z - Connexion échouée : Mot de passe incorrect pour "admin".
+2026-03-17T23:10:09.025Z - Connexion échouée : Mot de passe incorrect pour "admin".
+2026-03-18T07:27:48.969Z - Connexion échouée : Mot de passe incorrect pour "admin".

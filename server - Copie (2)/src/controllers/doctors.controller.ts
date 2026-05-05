@@ -7,6 +7,8 @@ import { DoctorDTO, NewDoctorDTO , Doctor, NewDoctor, DoctorFilter} from "../mod
 import { isNumber, isString, isNewDoctor, isDoctor } from "../utils/guards";
 import { DoctorsMapper } from "../mappers/doctors.mapper";
 import { LoggerService } from "../services/logger.service"; 
+import { DoctorsService } from "../services/doctors.service";
+import { AuthService } from "../services/auth.service"; 
 
 export const doctorsController = Router();
 
@@ -22,33 +24,15 @@ const doctors: DoctorDTO[] = [
  * GET /doctors/
  */
 doctorsController.get("/", (req: Request, res: Response) => {
-  LoggerService.info(`GET /doctors/ - speciality: ${req.query.speciality }`);
+  LoggerService.info("[GET] /doctors/");
 
-  const specialityValue = req.query.speciality;
-  const filter: DoctorFilter = {};
+  const rawSpeciality = req.query.speciality;
+  const filter: DoctorFilter = {
+    speciality: typeof rawSpeciality === 'string' ? rawSpeciality : undefined
+  };
 
-  if (isString(specialityValue)) {
-    filter.speciality = specialityValue;
-    LoggerService.error(`GET /doctors/ ${req.query.speciality}`)
-    res.status(400).json("invalid value");
-  }
-
-  let filteredDoctors = doctors;
-
-  if (filter.speciality) {
-    let temp: Doctor[] = [];
-    for (let i = 0; i < doctors.length; i++) {
-      if (doctors[i].speciality === filter.speciality) {
-        temp[temp.length] = doctors[i];
-      }
-    }
-    filteredDoctors = temp;
-  }
-
-  let doctorsDTO: DoctorDTO[] = [];
-  for (let i = 0; i < filteredDoctors.length; i++) {
-      doctorsDTO[i] = DoctorsMapper.toDTO(filteredDoctors[i]);
-  }
+  const doctors = DoctorsService.getAll(filter);
+  const doctorsDTO = doctors.map(doctor => DoctorsMapper.toDTO(doctor));
 
   res.status(200).json(doctorsDTO);
 });
@@ -145,7 +129,7 @@ doctorsController.put("/:id", (req: Request, res : Response) => {
 });
 
 
-doctorsController.delete("/:id", (req: Request, res : Response) => {
+doctorsController.delete("/:id", AuthService.authorize, (req: Request, res : Response) => {
   LoggerService.info(`DELETE /doctors/${req.params.id}`);
 
   const id  = Number(req.params.id);

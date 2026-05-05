@@ -1,0 +1,65 @@
+
+###
+# create an appointment
+POST http://localhost:3000/appointments HTTP/1.1
+Authorization: Bearer YWRtaW4=
+###
+# create an appointment with empty body
+POST http://localhost:3000/appointments HTTP/1.1
+Authorization: Bearer TON_VRAI_TOKEN_ICI
+
+###
+# create a new appointment
+POST http://localhost:3000/appointments HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer TON_VRAI_TOKEN_ICI
+
+{
+    "dateTime": "2026-10-25T14:30:00Z",
+    "doctorId": 1,
+    "patientId": 2
+}
+
+###
+# get the list of appointments
+GET http://localhost:3000/appointments HTTP/1.1
+Authorization: Bearer TON_VRAI_TOKEN_ICI
+
+###
+# get a filtered list of appointments by doctor
+GET http://localhost:3000/appointments?doctorId=1 HTTP/1.1
+Authorization: Bearer TON_VRAI_TOKEN_ICI
+
+###
+# get a specific appointment
+GET http://localhost:3000/appointments/1 HTTP/1.1
+Authorization: Bearer TON_VRAI_TOKEN_ICI
+
+###
+# update an existing appointment
+PUT http://localhost:3000/appointments/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer TON_VRAI_TOKEN_ICI
+
+{
+    "id": 1,
+    "dateTime": "2026-10-26T09:00:00Z",
+    "doctorId": 1,
+    "patientId": 2,
+    "status": "NEW"
+}
+
+###
+# update appointment status to CONFIRMED
+PATCH http://localhost:3000/appointments/1/status/CONFIRMED HTTP/1.1
+Authorization: Bearer TON_VRAI_TOKEN_ICI
+
+###
+# update appointment status with invalid transition (Error 400 test)
+PATCH http://localhost:3000/appointments/1/status/NEW HTTP/1.1
+Authorization: Bearer TON_VRAI_TOKEN_ICI
+
+###
+# delete an appointment
+DELETE http://localhost:3000/appointments/1 HTTP/1.1
+Authorization: Bearer TON_VRAI_TOKEN_ICI

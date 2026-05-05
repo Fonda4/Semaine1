@@ -1,0 +1,108 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthService = void 0;
+const logger_service_1 = require("./logger.service");
+const user_services_1 = require("./user.services");
+const bcrypt = __importStar(require("bcrypt"));
+const token_utils_1 = require("../utils/token.utils");
+const guards_1 = require("../utils/guards");
+class AuthService {
+    static login(username, password) {
+        try {
+            const user = user_services_1.UsersService.getByUserName(username);
+            if (!user) {
+                logger_service_1.LoggerService.error(`erreur : l'utilisateur ${username} n'extiste pas`);
+                return undefined;
+            }
+            const isPasswordValid = bcrypt.compareSync(password, user.password);
+            if (!isPasswordValid) {
+                logger_service_1.LoggerService.error(`Connexion échouée : Mot de passe incorrect pour "${username}".`);
+                return undefined;
+            }
+            const token = (0, token_utils_1.generateFakeToken)(user.username);
+            if (!token) {
+                logger_service_1.LoggerService.error(`Connexion échouée : Impossible de générer le token.`);
+                return undefined;
+            }
+            const authenticatedUser = {
+                username: user.username,
+                token: token
+            };
+            return authenticatedUser;
+        }
+        catch (_a) {
+            logger_service_1.LoggerService.error('error');
+        }
+    }
+    /**
+         * Middleware d'autorisation pour protéger les routes.
+         */
+    static authorize(req, res, next) {
+        const token = req.get("authorization");
+        if (!(0, guards_1.isString)(token)) {
+            res.status(401).send("Non autorisé : Token manquant ou invalide");
+            return;
+        }
+        const username = (0, token_utils_1.validateFakeToken)(token);
+        if (!username) {
+            res.status(401).send("Non autorisé : Token corrompu");
+            return;
+        }
+        const existingUser = user_services_1.UsersService.getByUserName(username);
+        if (!existingUser) {
+            res.status(401).send("Non autorisé : Utilisateur introuvable");
+            return;
+        }
+        req.user = existingUser;
+        return next();
+    }
+    /**
+     * Middleware de vérification des droits Administrateur.
+     * ATTENTION : Doit toujours être placé APRÈS le middleware 'authorize' dans les routes !
+     */
+    static isAdmin(req, res, next) {
+        if (!req.user) {
+            res.status(403).send("Interdit : Utilisateur introuvable dans la requête");
+            return;
+        }
+        if (req.user.role !== 'admin') {
+            res.status(403).send("Interdit : Vous n'avez pas les droits d'administrateur");
+            return;
+        }
+        return next();
+    }
+}
+exports.AuthService = AuthService;

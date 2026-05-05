@@ -1,11 +1,11 @@
-import { Address } from "../models/address.model";
-// import { Appointment, AppointmentDTO, EAppointmentStatus, NewAppointmentDTO } from "../models/appointment.model";
- import { Doctor } from "../models/doctor.model";
- import { NewDoctorDTO } from "../models/doctor.model";
-import { NewPatientDTO, Patient, PatientDTO } from "../models/patient.model";
+import { Address, AddressDTO } from "../models/address.model";
+// import { MedicalExamDTO } from "../models/medical-exam.model.dto";
+import { Appointment, NewAppointment,EAppointmentStatus } from "../models/appointment.model";
 import { DoctorDTO } from "../models/doctor.model";
-// import { NewUserDTO } from "../models/user.model";
-// import { MedicalExam } from "../models/medical_exam.model";
+import { NewDoctorDTO } from "../models/doctor.model";
+import { NewPatientDTO, PatientDTO } from "../models/patient.model";
+import { NewUserDTO,EROLES  } from "../models/user.model";
+
 
 /**
  * Function that validates that an input is a number
@@ -30,15 +30,15 @@ export function isString(data: any): data is string {
  * @param data 
  * @returns true if data is a valid Doctor model
  */
-export function isDoctor(data: unknown): data is Doctor {
+export function isDoctor(data: unknown): data is DoctorDTO {
   if (
     data && typeof data === 'object' &&
-    ((data as Doctor).id === undefined || typeof (data as Doctor).id == 'number') &&
+    ((data as DoctorDTO).id === undefined || typeof (data as DoctorDTO).id == 'number') &&
     'firstName' in data && 'lastName' in data &&
     'speciality' in data &&
-    typeof (data as Doctor).firstName === 'string' &&
-    typeof (data as Doctor).lastName === 'string'  &&
-    typeof (data as Doctor).speciality === 'string' 
+    typeof (data as DoctorDTO).firstName === 'string' &&
+    typeof (data as DoctorDTO).lastName === 'string'  &&
+    typeof (data as DoctorDTO).speciality === 'string' 
   ) {
     return true;
   }
@@ -50,25 +50,24 @@ export function isDoctorDTO(data: unknown): data is DoctorDTO {
   return isDoctor(data);
 }
 
-// /**
-//  * Function that validates that an input is a valid Doctor model
-//  * @param data 
-//  * @returns true if data is a valid Doctor model
-//  */
+/**
+ * Function that validates that an input is a valid Doctor model
+ * @param data 
+ * @returns true if data is a valid Doctor model
+ */
 export function isNewDoctor(data: unknown): data is NewDoctorDTO {
-   if (
-     data && typeof data === 'object' &&
-     'firstName' in data && 'lastName' in data &&
-     'speciality' in data &&
-     typeof (data as NewDoctorDTO).firstName === 'string' &&
-     typeof (data as NewDoctorDTO).lastName === 'string'  &&
-     typeof (data as NewDoctorDTO).speciality === 'string' 
-   ) {
-     return true;
-   }
-
-   return false;
- }
+  if (
+    data && typeof data === 'object' &&
+    'firstName' in data && 'lastName' in data &&
+    'speciality' in data &&
+    typeof (data as NewDoctorDTO).firstName === 'string' &&
+    typeof (data as NewDoctorDTO).lastName === 'string'  &&
+    typeof (data as NewDoctorDTO).speciality === 'string' 
+  ) {
+    return true;
+  }
+  return false;
+}
 
 /**
  * Function that validates that an input is a valid Patient model
@@ -78,47 +77,47 @@ export function isNewDoctor(data: unknown): data is NewDoctorDTO {
 export function isPatient(data: unknown): data is PatientDTO {
   if(
     data && typeof data === 'object' &&
-    ((data as Patient).id === undefined || typeof (data as Patient).id == 'number') &&
+    ((data as PatientDTO).id === undefined || typeof (data as PatientDTO).id == 'number') &&
     'firstName' in data && 'lastName' in data &&
     'birthDate' in data && 'niss' in data &&
     'address' in data && 'refDoctor' in data &&
-    typeof (data as Patient).firstName === 'string' &&
-    ((typeof (data as Patient).birthDate === 'string') || ((data as Patient).birthDate instanceof Date)) &&
-    typeof (data as Patient).niss === 'string' &&
-    typeof (data as Patient).address === 'object' && isAddress((data as Patient).address) &&
-    typeof (data as Patient).refDoctor === 'number'
+    typeof (data as PatientDTO).firstName === 'string' &&
+    ((typeof (data as PatientDTO).birthDate === 'string') || ((data as PatientDTO).birthDate as any) instanceof Date) &&
+    typeof (data as PatientDTO).niss === 'string' &&
+    typeof (data as PatientDTO).address === 'object' && isAddress((data as PatientDTO).address) &&
+    typeof (data as PatientDTO).refDoctor === 'number'
   ) {
     return true;
   }
   return false;
 }
 
-// export function isNewPatient(data: unknown): data is NewPatientDTO {
-//   if (
-//     data && typeof data === 'object' &&
-//     'firstName' in data && 'lastName' in data &&
-//     'birthDate' in data && 'niss' in data &&
-//     'address' in data &&
-//     typeof (data as NewPatientDTO).firstName === 'string' &&
-//     ((typeof (data as NewPatientDTO).birthDate === 'string') || (isDate((data as NewPatientDTO).birthDate))) &&
-//     typeof (data as NewPatientDTO).niss === 'string' &&
-//     typeof (data as NewPatientDTO).address === 'object' && isAddress((data as NewPatientDTO).address) 
-//   ) {
-//     return true;
-//   }
-//   return false;
-// }
+export function isNewPatient(data: unknown): data is NewPatientDTO {
+  if (
+    data && typeof data === 'object' &&
+    'firstName' in data && 'lastName' in data &&
+    'birthDate' in data && 'niss' in data &&
+    'address' in data &&
+    typeof (data as NewPatientDTO).firstName === 'string' &&
+    ((typeof (data as NewPatientDTO).birthDate === 'string') || (isDate((data as NewPatientDTO).birthDate))) &&
+    typeof (data as NewPatientDTO).niss === 'string' &&
+    typeof (data as NewPatientDTO).address === 'object' && isAddress((data as NewPatientDTO).address) 
+  ) {
+    return true;
+  }
+  return false;
+}
 
 /**
  * Function that validates that an input is a valid Address
  * @param data any data
  * @returns true if data is a valid Address
  */
-function isAddress(data: any): data is Address {
+function isAddress(data: any): data is AddressDTO {
   return data && typeof data === 'object' &&
-  typeof((data as Address).street) === 'string' && typeof((data as Address).number) === 'string' &&
-  typeof((data as Address).zipCode) === 'string' && typeof((data as Address).city) === 'string' &&
-  typeof((data as Address).country) === 'string';
+  typeof((data as AddressDTO).street) === 'string' && typeof((data as AddressDTO).number) === 'string' &&
+  typeof((data as AddressDTO).zipCode) === 'string' && typeof((data as AddressDTO).city) === 'string' &&
+  typeof((data as AddressDTO).country) === 'string';
 }
 
 /**
@@ -132,21 +131,37 @@ export function isNiss(data: any): data is String {
   data.match(/^\d{6}-\d{3}-\d{2}$/) !== null;
 }
 
-// export function isDate(data: unknown): data is Date{
-//   return data != null && data != undefined && (typeof data === 'object') && (data instanceof Date);
-// }
+export function isDate(data: unknown): data is Date{
+  return data != null && data != undefined && (typeof data === 'object') && (data instanceof Date);
+}
 
-// export function isNewUser(data: unknown): data is NewUserDTO {
-//   return data != null && data != undefined && typeof data === 'object' &&
-//     'lastName' in data && 'firstName' in data &&
-//     'email' in data && 'password' in data &&
-//     'role' in data && 'username' in data &&
-//     isString((data as NewUserDTO).password) &&
-//     isString((data as NewUserDTO).email) &&
-//     isString((data as NewUserDTO).firstName) &&
-//     isString((data as NewUserDTO).lastName) &&
-//     isNumber((data as NewUserDTO).role) &&
-//     isString((data as NewUserDTO).username);
+// Si tu veux vérifier strictement que le rôle fait partie de EROLES, 
+// n'oublie pas d'importer EROLES tout en haut de guards.ts :
+// import { NewUserDTO, EROLES } from "../models/user.model";
+
+export function isNewUser(data: unknown): data is NewUserDTO {
+  return (
+    data !== null &&
+    data !== undefined &&
+    typeof data === 'object' &&
+    'username' in data && typeof (data as NewUserDTO).username === 'string' &&
+    'password' in data && typeof (data as NewUserDTO).password === 'string' &&
+    'email' in data && typeof (data as NewUserDTO).email === 'string' &&
+    'lastName' in data && typeof (data as NewUserDTO).lastName === 'string' &&
+    'firstName' in data && typeof (data as NewUserDTO).firstName === 'string' &&
+    'role' in data && typeof (data as NewUserDTO).role === 'string' // Ici le rôle passe car "admin" est un string
+  );
+}
+
+// export function isAppointment(data: unknown): data is AppointmentDTO {
+//   return data != undefined && typeof data === 'object' &&
+//   ((data as AppointmentDTO).id === undefined || typeof (data as AppointmentDTO).id == 'number') &&
+//   'date' in data && 'doctor' in data &&
+//   'patient' in data && 'status' in data &&
+//   (typeof (data as AppointmentDTO).dateTime === 'string' || (typeof (data as AppointmentDTO).dateTime === 'object') && isDate((data as AppointmentDTO).dateTime)) &&
+//   isNumber((data as Appointment).doctorId) &&
+//   isNumber((data as Appointment).patientId) &&
+//   (typeof (data as Appointment).status === 'string');
 // }
 
 // export function isAppointment(data: unknown): data is AppointmentDTO {
@@ -163,29 +178,34 @@ export function isNiss(data: any): data is String {
 //     isNumber((data as NewAppointmentDTO).patientId);
 // }
 
-// export function isMedicalExam(data: unknown): data is MedicalExam {
-//   if(
-//     data != undefined && typeof data === 'object' &&
-//     // ('id' in data) &&
-//     ((data as MedicalExam).id === undefined || typeof (data as MedicalExam).id == 'number') &&
-//     ('dateTime' in data) && 
-//     ('patientId' in data) && ('doctorId' in data) &&
-//     // ('status' in data) &&
-//     (typeof (data as MedicalExam).dateTime === 'string' || ((typeof (data as MedicalExam).dateTime === 'object') && isDate((data as MedicalExam).dateTime))) &&
-//     isNumber((data as MedicalExam).patientId) &&
-//     isNumber((data as MedicalExam).doctorId) &&
-//     // status is not required in case of creation
-//     ((data as MedicalExam).status === undefined || typeof (data as MedicalExam).status == 'string')
-//     // isNumber((data as MedicalExamDTO).appointmentId) &&
-//     // (typeof (data as MedicalExam).type === 'string') &&
-//     // (typeof (data as MedicalExam).notes === 'string') &&
-//     // (typeof (data as MedicalExam).status === 'string')
-//   ){
-//     return true;
-//   }
-//   return false;
-// }
+export function isAppointmentStatus(data: string): data is EAppointmentStatus {
+  return (Object.values(EAppointmentStatus) as string[]).includes(data);
+}
 
-// export function isAppointmentStatus(data: string): data is EAppointmentStatus {
-//   return (Object.values(EAppointmentStatus) as string[]).includes(data);
-// }
+
+/**
+ * Function that validates that an input is a valid NewAppointment
+ */
+export function isNewAppointment(data: unknown): data is NewAppointment {
+  return (
+    data !== undefined && 
+    data !== null && 
+    typeof data === 'object' &&
+    'dateTime' in data && typeof (data as NewAppointment).dateTime === 'string' &&
+    'doctorId' in data && isNumber((data as NewAppointment).doctorId) &&
+    'patientId' in data && isNumber((data as NewAppointment).patientId)
+  );
+}
+
+/**
+ * Function that validates that an input is a valid Appointment (with ID)
+ */
+export function isAppointment(data: unknown): data is Appointment {
+  return (
+    data !== undefined && 
+    data !== null && 
+    typeof data === 'object' &&
+    isNewAppointment(data) && 
+    'id' in data && isNumber((data as Appointment).id)
+  );
+}

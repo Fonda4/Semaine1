@@ -8,6 +8,8 @@ const express_1 = require("express");
 const guards_1 = require("../utils/guards");
 const doctors_mapper_1 = require("../mappers/doctors.mapper");
 const logger_service_1 = require("../services/logger.service");
+const doctors_service_1 = require("../services/doctors.service");
+const auth_service_1 = require("../services/auth.service");
 exports.doctorsController = (0, express_1.Router)();
 logger_service_1.LoggerService.debug("OK Doctors");
 const doctors = [
@@ -19,28 +21,13 @@ const doctors = [
  * GET /doctors/
  */
 exports.doctorsController.get("/", (req, res) => {
-    logger_service_1.LoggerService.info(`GET /doctors/ - speciality: ${req.query.speciality}`);
-    const specialityValue = req.query.speciality;
-    const filter = {};
-    if ((0, guards_1.isString)(specialityValue)) {
-        filter.speciality = specialityValue;
-        logger_service_1.LoggerService.error(`GET /doctors/ ${req.query.speciality}`);
-        res.status(400).json("invalid value");
-    }
-    let filteredDoctors = doctors;
-    if (filter.speciality) {
-        let temp = [];
-        for (let i = 0; i < doctors.length; i++) {
-            if (doctors[i].speciality === filter.speciality) {
-                temp[temp.length] = doctors[i];
-            }
-        }
-        filteredDoctors = temp;
-    }
-    let doctorsDTO = [];
-    for (let i = 0; i < filteredDoctors.length; i++) {
-        doctorsDTO[i] = doctors_mapper_1.DoctorsMapper.toDTO(filteredDoctors[i]);
-    }
+    logger_service_1.LoggerService.info("[GET] /doctors/");
+    const rawSpeciality = req.query.speciality;
+    const filter = {
+        speciality: typeof rawSpeciality === 'string' ? rawSpeciality : undefined
+    };
+    const doctors = doctors_service_1.DoctorsService.getAll(filter);
+    const doctorsDTO = doctors.map(doctor => doctors_mapper_1.DoctorsMapper.toDTO(doctor));
     res.status(200).json(doctorsDTO);
 });
 exports.doctorsController.get("/:id", (req, res) => {
@@ -109,7 +96,7 @@ exports.doctorsController.put("/:id", (req, res) => {
     logger_service_1.LoggerService.info(`PUT /doctors/${req.params.id} `);
     res.status(200).send(doctors_mapper_1.DoctorsMapper.toDTO(updatedDoctor));
 });
-exports.doctorsController.delete("/:id", (req, res) => {
+exports.doctorsController.delete("/:id", auth_service_1.AuthService.authorize, (req, res) => {
     logger_service_1.LoggerService.info(`DELETE /doctors/${req.params.id}`);
     const id = Number(req.params.id);
     let index = -1;

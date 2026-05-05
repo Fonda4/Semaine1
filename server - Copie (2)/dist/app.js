@@ -9,6 +9,9 @@ const cors = require('cors');
 const express_1 = __importDefault(require("express"));
 const doctors_controller_1 = require("./controllers/doctors.controller");
 const patients_controller_1 = require("./controllers/patients.controller");
+const auth_controller_1 = require("./controllers/auth.controller");
+const users_controller_1 = require("./controllers/users.controller");
+const appointments_controller_1 = __importDefault(require("./controllers/appointments.controller"));
 // creates an express app
 exports.app = (0, express_1.default)();
 exports.app.use(cors());
@@ -20,3 +23,6 @@ exports.app.get('/', (req, res) => {
 // use the controller to use the route
 exports.app.use('/doctors', doctors_controller_1.doctorsController);
 exports.app.use('/patients', patients_controller_1.patientsController);
+exports.app.use('/users', users_controller_1.usersController);
+exports.app.use('/auth', auth_controller_1.authController);
+exports.app.use('/appointments', appointments_controller_1.default);

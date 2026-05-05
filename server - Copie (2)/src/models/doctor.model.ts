@@ -1,11 +1,12 @@
-import { Person } from "./person.model";
+import { BasicModel, BasicModelDBO, BasicModelDTO } from "./basic.model";
 
-export interface Doctor extends Person {
+export interface Doctor extends BasicModel {
+  firstName: string;
+  lastName: string;
   speciality: string;
 }
 
-export interface DoctorDTO {
-  id: number;
+export interface DoctorDTO extends BasicModelDTO {
   firstName: string;
   lastName: string;
   speciality: string;
@@ -24,6 +25,13 @@ export interface NewDoctor {
   lastName: string;
   speciality: string;
 }
+
 export interface DoctorFilter {
   speciality?: string;
+}
+
+export interface DoctorDBO extends BasicModelDBO {
+  first_name: string;
+  last_name: string;
+  speciality: string;
 }
